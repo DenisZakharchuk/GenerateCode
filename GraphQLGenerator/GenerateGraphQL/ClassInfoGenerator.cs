@@ -19,11 +19,17 @@ namespace GQLG
                                        Type = GetTypeName(p.PropertyType),
                                        IsNullable = IsNullable(p.PropertyType),
                                        IsCollection = IsCollection(p.PropertyType),
+                                       IsPrimitive = IsPrimitive(p.PropertyType),
                                        GenericArguments = GetGenericArguments(p.PropertyType)
                                    })
                                    .ToList();
 
             return JsonConvert.SerializeObject(properties, Formatting.Indented);
+        }
+
+        private static bool IsPrimitive(Type propertyType)
+        {
+            return propertyType.IsPrimitive;
         }
 
         // Get the name of the type, without handling nullable types here
