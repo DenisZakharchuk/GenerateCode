@@ -42,12 +42,24 @@ namespace GQLG
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.ThisExpression(),
-                            SyntaxFactory.IdentifierName("Field")))
+                            SyntaxFactory.GenericName(
+                                SyntaxFactory.IdentifierName("Field").Identifier,
+                                SyntaxFactory.TypeArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList(
+                                        SyntaxFactory.ParseTypeName(GetGraphQLTypeName(property)))))))
                     .WithArgumentList(
                         SyntaxFactory.ArgumentList(
-                            SyntaxFactory.SingletonSeparatedList(
-                                SyntaxFactory.Argument(
-                                    SyntaxFactory.IdentifierName(property.Name)))))))
+                            SyntaxFactory.SeparatedList(
+                                new[] {
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.LiteralExpression(
+                                            SyntaxKind.StringLiteralExpression,
+                                            SyntaxFactory.Literal(property.Name))),
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.LiteralExpression(
+                                            SyntaxKind.StringLiteralExpression,
+                                            SyntaxFactory.Literal(property.Name)))
+                                })))))
             .ToArray();
 
             var triviaList = SyntaxFactory.TriviaList(
@@ -59,6 +71,11 @@ namespace GQLG
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .WithBody(SyntaxFactory.Block(statements))
                 .WithLeadingTrivia(triviaList); // Add trivia to the constructor
+        }
+
+        private static string GetGraphQLTypeName(PropertyInfo property)
+        {
+            return property.Type;
         }
     }
 }
