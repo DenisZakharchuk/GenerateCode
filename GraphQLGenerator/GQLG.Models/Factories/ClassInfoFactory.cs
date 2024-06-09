@@ -35,8 +35,8 @@ namespace GQLG.Models.Factories
                 propertyType.Equals(typeof(DateTime)) ||
                 propertyType.Equals(typeof(DateTimeOffset)) ||
                 propertyType.Equals(typeof(TimeSpan)) ||
-                (IsNullable(propertyType) && 
-                    Nullable.GetUnderlyingType(propertyType).IsPrimitive);
+                (IsNullable(propertyType) &&
+                    IsPrimitive(Nullable.GetUnderlyingType(propertyType)));
         }
 
         // Get the name of the type, without handling nullable types here

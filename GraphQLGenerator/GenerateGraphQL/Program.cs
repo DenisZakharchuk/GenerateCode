@@ -50,13 +50,19 @@ namespace GQLG
                         new GraphQLTypeGenerator() 
                     };
 
-                    foreach (var graphQLTypeGenerator in graphQLTypeGenerators)
+                    foreach (var codeGenerator in graphQLTypeGenerators)
                     {
                         // Generate GraphQL type class
-                        SyntaxTree syntaxTree = graphQLTypeGenerator.Generate(properties, type.Name);
+                        SyntaxTree syntaxTree = codeGenerator.Generate(properties, type.Name);
 
                         // Save generated class file
-                        var outputCsPath = Path.Combine(outputFolder, type.Name + "GraphQLType.cs");
+                        var outputSubFolder = Path.Combine(outputFolder, type.Name, codeGenerator.SubDir());
+
+                        // Ensure output directory exists
+                        Directory.CreateDirectory(outputSubFolder);
+                        
+                        var outputCsPath = Path.Combine(outputSubFolder, $"{type.Name}{codeGenerator.CodeKind()}.cs");
+
                         File.WriteAllText(outputCsPath, syntaxTree.ToString());
                     }                    
                 }
