@@ -5,15 +5,15 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace GQLG
+namespace GQLG.Models.Factories
 {
-    public static class ClassInfoGenerator
+    public static class ClassInfoFactory
     {
         // Generate method to create JSON string of public properties
-        public static string Generate(Type target)
+        public static string Create(Type target)
         {
             var properties = target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                   .Select(p => new PropertyInfo
+                                   .Select(p => new Meta.PropertyInfo
                                    {
                                        Name = p.Name,
                                        Type = GetTypeName(p.PropertyType),
@@ -29,7 +29,14 @@ namespace GQLG
 
         private static bool IsPrimitive(Type propertyType)
         {
-            return propertyType.IsPrimitive;
+            return 
+                propertyType.IsPrimitive || 
+                propertyType.Equals(typeof(string)) || 
+                propertyType.Equals(typeof(DateTime)) ||
+                propertyType.Equals(typeof(DateTimeOffset)) ||
+                propertyType.Equals(typeof(TimeSpan)) ||
+                (IsNullable(propertyType) && 
+                    Nullable.GetUnderlyingType(propertyType).IsPrimitive);
         }
 
         // Get the name of the type, without handling nullable types here

@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateGraphQL", "GenerateGraphQL\GenerateGraphQL.csproj", "{36B8A9BB-6AD6-431D-9302-66485C5DB10B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GQLG.CodeGeneration", "GQLG.CodeGeneration\GQLG.CodeGeneration.csproj", "{8D7B4C13-2D2B-4098-B1C1-BDC67189A22D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GQLG.Models", "GQLG.Models\GQLG.Models.csproj", "{A7C172A7-4C1B-4104-89B6-58AA2DF1B17F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{36B8A9BB-6AD6-431D-9302-66485C5DB10B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36B8A9BB-6AD6-431D-9302-66485C5DB10B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36B8A9BB-6AD6-431D-9302-66485C5DB10B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D7B4C13-2D2B-4098-B1C1-BDC67189A22D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D7B4C13-2D2B-4098-B1C1-BDC67189A22D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D7B4C13-2D2B-4098-B1C1-BDC67189A22D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D7B4C13-2D2B-4098-B1C1-BDC67189A22D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C172A7-4C1B-4104-89B6-58AA2DF1B17F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C172A7-4C1B-4104-89B6-58AA2DF1B17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C172A7-4C1B-4104-89B6-58AA2DF1B17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C172A7-4C1B-4104-89B6-58AA2DF1B17F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

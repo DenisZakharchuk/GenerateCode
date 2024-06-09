@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GQLG
+namespace GQLG.Models.Meta
 {
     public class PropertyInfo
     {

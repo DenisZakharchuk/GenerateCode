@@ -4,12 +4,14 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
+using GQLG.Models.Meta;
+using GQLG.CodeGeneration.Base;
 
 namespace GQLG
 {
-    public static class GraphQLTypeGenerator
+    public class GraphQLTypeGenerator : CodeGenerator
     {
-        public static SyntaxTree Generate(PropertyInfo[] properties, string typeName)
+        public override SyntaxTree Generate(PropertyInfo[] properties, string typeName)
         {
             var graphQLTypeName = GetGraphQLTypeName(typeName);
 
@@ -34,7 +36,7 @@ namespace GQLG
             return SyntaxFactory.SyntaxTree(compilationUnit, encoding: System.Text.Encoding.UTF8);
         }
 
-        private static ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
+        private ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
         {
             var statements = properties
                 .Where(property => !property.IsCollection)
@@ -62,13 +64,14 @@ namespace GQLG
                 .WithLeadingTrivia(triviaList); // Add trivia to the constructor
         }
 
-        private static ArgumentSyntax[] GetArgumentsForFieldMethod(PropertyInfo property)
+        private ArgumentSyntax[] GetArgumentsForFieldMethod(PropertyInfo property)
         {
-            return new[] {
+            var arguments = new List<ArgumentSyntax>() {
                 SyntaxFactory.Argument(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.StringLiteralExpression,
                         SyntaxFactory.Literal(property.Name))),
+
                 SyntaxFactory.Argument(SyntaxFactory.SimpleLambdaExpression(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier("x")),
                     SyntaxFactory.MemberAccessExpression(
@@ -76,20 +79,27 @@ namespace GQLG
                         SyntaxFactory.IdentifierName("x"),
                         SyntaxFactory.IdentifierName(property.Name)
                     ))),
+
                 SyntaxFactory.Argument(
                     SyntaxFactory.LiteralExpression(
-                        property.IsNullable 
+                        property.IsNullable
                         ? SyntaxKind.TrueLiteralExpression
-                        : SyntaxKind.FalseLiteralExpression)),
-                SyntaxFactory.Argument(
-                    SyntaxFactory.TypeOfExpression(
-                            SyntaxFactory.ParseTypeName(GetGraphQLTypeName(property))
-                        ))
-
+                        : SyntaxKind.FalseLiteralExpression)) 
             };
+
+            if (!property.IsPrimitive)
+            {
+                arguments.Add(SyntaxFactory.Argument(
+                    SyntaxFactory.TypeOfExpression(
+                        SyntaxFactory.ParseTypeName(
+                            GetGraphQLTypeName(property)
+                            ))));
+            }
+
+            return arguments.ToArray();
         }
 
-        private static string GetGraphQLTypeName(PropertyInfo property)
+        private string GetGraphQLTypeName(PropertyInfo property)
         {
             if (property is null)
             {
