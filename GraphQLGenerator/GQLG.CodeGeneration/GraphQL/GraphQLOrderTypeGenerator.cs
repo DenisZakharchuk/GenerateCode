@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.CodeAnalysis;
 using GQLG.Models.Meta;
 using GQLG.CodeGeneration.Base;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,12 +11,7 @@ namespace GQLG.CodeGeneration.GraphQL
         {
         }
 
-        public override SyntaxTree Generate(ClassInfo classInfo)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override TypeSyntax GetBaseClass(string typeName)
+        protected override TypeSyntax GetBaseClass(ClassInfo classInfo)
         {
             throw new NotImplementedException();
         }

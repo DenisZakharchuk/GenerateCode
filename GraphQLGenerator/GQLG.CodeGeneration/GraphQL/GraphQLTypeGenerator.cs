@@ -19,31 +19,11 @@ namespace GQLG.CodeGeneration.GraphQL
         {
         }
 
-        public override SyntaxTree Generate(ClassInfo classInfo)
-        {
-            var typeName = classInfo.Name;
-            var properties = classInfo.Properties;
-            var @namespace = Namespace(classInfo);
-
-            var classDeclaration = ClassDeclaration(classInfo);
-
-            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(@namespace))
-                .AddMembers(classDeclaration);
-
-            var compilationUnit = SyntaxFactory.CompilationUnit()
-                .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")))
-                .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("GraphQL.Types")))
-                .AddMembers(namespaceDeclaration)
-                .NormalizeWhitespace();
-
-            return SyntaxFactory.SyntaxTree(compilationUnit, encoding: System.Text.Encoding.UTF8);
-        }
-
-        protected override ClassDeclarationSyntax ClassDeclaration(ClassInfo classInfo)
-        {
-            return base.ClassDeclaration(classInfo)
-                .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)));;
-        }
+        //protected override ClassDeclarationSyntax ClassDeclaration(ClassInfo classInfo)
+        //{
+        //    return base.ClassDeclaration(classInfo)
+        //        .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)));
+        //}
 
         protected override string GetClassName(string type)
         {
@@ -55,13 +35,13 @@ namespace GQLG.CodeGeneration.GraphQL
             return type + "GraphQLType";
         }
 
-        protected override TypeSyntax GetBaseClass(string baseTypeName)
+        protected override TypeSyntax GetBaseClass(ClassInfo classInfo)
         {
             return SyntaxFactory.GenericName(SyntaxFactory.Identifier("ObjectGraphType"))
-                .AddTypeArgumentListArguments(SyntaxFactory.ParseTypeName(baseTypeName));
+                .AddTypeArgumentListArguments(SyntaxFactory.ParseTypeName(classInfo.Name));
         }
 
-        private ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
+        protected override ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
         {
             var statements = properties
                 .Where(property => !property.IsCollection)

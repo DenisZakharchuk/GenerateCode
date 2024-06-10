@@ -40,13 +40,15 @@ namespace GQLG
                     var classInfo = ClassInfoFactory.Build(type);
 
                     var codeGenerators = new CodeGenerator[] { 
-                        new GraphQLTypeGenerator() 
+                        new GraphQLTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Object"),
+                        new GraphQLFilterTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Filters"),
+                        //new GraphQLOrderTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Orders")
                     };
 
                     foreach (var codeGenerator in codeGenerators)
                     {
                         // Generate GraphQL type class
-                        SyntaxTree syntaxTree = codeGenerator.Generate(classInfo);
+                        var syntaxTree = codeGenerator.Generate(classInfo);
 
                         // Save generated class file
                         var outputSubFolder = Path.Combine(outputFolder, type.Name, codeGenerator.SubDir());
