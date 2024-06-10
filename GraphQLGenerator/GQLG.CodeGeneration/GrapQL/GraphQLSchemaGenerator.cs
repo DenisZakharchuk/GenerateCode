@@ -7,10 +7,6 @@ namespace GQLG
 {
     public class GraphQLSchemaGenerator : CodeGenerator
     {
-        public override SyntaxTree Generate(PropertyInfo[] properties, string typeName)
-        {
-            throw new NotImplementedException();
-        }
 
         public override SyntaxTree Generate(ClassInfo classInfo)
         {
