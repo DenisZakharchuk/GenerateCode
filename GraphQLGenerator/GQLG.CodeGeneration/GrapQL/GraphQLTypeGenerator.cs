@@ -11,8 +11,11 @@ namespace GQLG
 {
     public class GraphQLTypeGenerator : CodeGenerator
     {
-        public override SyntaxTree Generate(PropertyInfo[] properties, string typeName)
+        public override SyntaxTree Generate(ClassInfo classInfo)
         {
+            var typeName = classInfo.Name;
+            var properties = classInfo.Properties;
+
             var graphQLTypeName = GetGraphQLTypeName(typeName);
 
             var classDeclaration = SyntaxFactory.ClassDeclaration(graphQLTypeName)
@@ -133,5 +136,6 @@ namespace GQLG
 
             return type + "GraphQLType";
         }
+
     }
 }

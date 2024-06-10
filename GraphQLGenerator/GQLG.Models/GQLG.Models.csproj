@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factories\ClassInfoFactory.cs" />
+    <Compile Include="Meta\ClassInfo.cs" />
     <Compile Include="Meta\PropertyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

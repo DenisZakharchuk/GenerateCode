@@ -37,14 +37,7 @@ namespace GQLG
                 foreach (var type in types)
                 {
                     // Generate JSON string for the type
-                    var json = ClassInfoFactory.Create(type);
-
-                    // Save JSON file
-                    var outputJsonPath = Path.Combine(outputFolder, type.Name + ".json");
-                    //File.WriteAllText(outputJsonPath, json);
-
-                    // Deserialize JSON to PropertyInfo array
-                    var properties = JsonConvert.DeserializeObject<Models.Meta.PropertyInfo[]>(json);
+                    var classInfo = ClassInfoFactory.Build(type);
 
                     var graphQLTypeGenerators = new CodeGenerator[] { 
                         new GraphQLTypeGenerator() 
@@ -53,7 +46,7 @@ namespace GQLG
                     foreach (var codeGenerator in graphQLTypeGenerators)
                     {
                         // Generate GraphQL type class
-                        SyntaxTree syntaxTree = codeGenerator.Generate(properties, type.Name);
+                        SyntaxTree syntaxTree = codeGenerator.Generate(classInfo);
 
                         // Save generated class file
                         var outputSubFolder = Path.Combine(outputFolder, type.Name, codeGenerator.SubDir());

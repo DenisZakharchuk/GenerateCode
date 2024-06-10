@@ -3,28 +3,51 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using GQLG.Models.Meta;
 using Newtonsoft.Json;
 
 namespace GQLG.Models.Factories
 {
     public static class ClassInfoFactory
     {
+        public static ClassInfo Build(Type target)
+        {
+            if (target is null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var classInfo = new ClassInfo()
+            {
+                Name = target.Name,
+                Namespace = target.Namespace,
+                Properties = CreateProperties(target).ToArray()
+            };
+
+            return classInfo;
+        }
+
         // Generate method to create JSON string of public properties
         public static string Create(Type target)
         {
-            var properties = target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                   .Select(p => new Meta.PropertyInfo
-                                   {
-                                       Name = p.Name,
-                                       Type = GetTypeName(p.PropertyType),
-                                       IsNullable = IsNullable(p.PropertyType),
-                                       IsCollection = IsCollection(p.PropertyType),
-                                       IsPrimitive = IsPrimitive(p.PropertyType),
-                                       GenericArguments = GetGenericArguments(p.PropertyType)
-                                   })
-                                   .ToList();
+            var properties = CreateProperties(target);
 
             return JsonConvert.SerializeObject(properties, Formatting.Indented);
+        }
+
+        private static List<Meta.PropertyInfo> CreateProperties(Type target)
+        {
+            return target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                               .Select(p => new Meta.PropertyInfo
+                                               {
+                                                   Name = p.Name,
+                                                   Type = GetTypeName(p.PropertyType),
+                                                   IsNullable = IsNullable(p.PropertyType),
+                                                   IsCollection = IsCollection(p.PropertyType),
+                                                   IsPrimitive = IsPrimitive(p.PropertyType),
+                                                   GenericArguments = GetGenericArguments(p.PropertyType)
+                                               })
+                                               .ToList();
         }
 
         private static bool IsPrimitive(Type propertyType)

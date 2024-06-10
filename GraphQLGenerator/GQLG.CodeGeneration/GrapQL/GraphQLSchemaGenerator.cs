@@ -11,5 +11,10 @@ namespace GQLG
         {
             throw new NotImplementedException();
         }
+
+        public override SyntaxTree Generate(ClassInfo classInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
