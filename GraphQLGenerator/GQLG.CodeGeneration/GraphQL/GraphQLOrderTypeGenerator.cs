@@ -2,6 +2,8 @@
 using GQLG.Models.Meta;
 using GQLG.CodeGeneration.Base;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Collections.Generic;
 
 namespace GQLG.CodeGeneration.GraphQL
 {
@@ -13,12 +15,38 @@ namespace GQLG.CodeGeneration.GraphQL
 
         protected override TypeSyntax GetBaseClass(ClassInfo classInfo)
         {
-            throw new NotImplementedException();
+            return SyntaxFactory.ParseTypeName("GraphQLOrder");
         }
 
         protected override string GetClassName(string type)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                throw new ArgumentException($"\"{nameof(type)}\" не может быть пустым или содержать только пробел.", nameof(type));
+            }
+
+            return type + "GraphQLOrder";
+        }
+        protected override ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
+        {
+            var statements = new List<ExpressionStatementSyntax>(1)
+            {
+                SyntaxFactory.ExpressionStatement(SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    SyntaxFactory.IdentifierName("Name"),
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.StringLiteralExpression,
+                        SyntaxFactory.Literal(graphQLTypeName)))
+                    )
+            };
+
+            return SyntaxFactory.ConstructorDeclaration(graphQLTypeName)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .WithBody(SyntaxFactory.Block(statements));
+        }
+        public override string CodeKind()
+        {
+            return "GraphQLOrder";
         }
     }
 }

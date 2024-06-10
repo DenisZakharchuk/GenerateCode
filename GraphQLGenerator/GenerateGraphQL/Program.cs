@@ -42,7 +42,7 @@ namespace GQLG
                     var codeGenerators = new CodeGenerator[] { 
                         new GraphQLTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Object"),
                         new GraphQLFilterTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Filters"),
-                        //new GraphQLOrderTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Orders")
+                        new GraphQLOrderTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Orders")
                     };
 
                     foreach (var codeGenerator in codeGenerators)
