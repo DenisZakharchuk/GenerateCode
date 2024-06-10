@@ -103,9 +103,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\CodeGenerator.cs" />
-    <Compile Include="GrapQL\GraphQLQueryGenerator.cs" />
-    <Compile Include="GrapQL\GraphQLSchemaGenerator.cs" />
-    <Compile Include="GrapQL\GraphQLTypeGenerator.cs" />
+    <Compile Include="GraphQL\GraphQLFilterTypeGenerator.cs" />
+    <Compile Include="GraphQL\GraphQLOrderTypeGenerator.cs" />
+    <Compile Include="GraphQL\GraphQLQueryGenerator.cs" />
+    <Compile Include="GraphQL\GraphQLSchemaGenerator.cs" />
+    <Compile Include="GraphQL\GraphQLTypeGenerator.cs" />
+    <Compile Include="Base\SingleClassGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

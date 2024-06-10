@@ -7,27 +7,27 @@ using System.Linq;
 using GQLG.Models.Meta;
 using GQLG.CodeGeneration.Base;
 
-namespace GQLG
+namespace GQLG.CodeGeneration.GraphQL
 {
-    public class GraphQLTypeGenerator : CodeGenerator
+    public class GraphQLTypeGenerator : SingleClassGenerator
     {
+        public GraphQLTypeGenerator(): base(classInfo => "GQLG.Generated")
+        {
+        }
+
+        public GraphQLTypeGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        {
+        }
+
         public override SyntaxTree Generate(ClassInfo classInfo)
         {
             var typeName = classInfo.Name;
             var properties = classInfo.Properties;
+            var @namespace = Namespace(classInfo);
 
-            var graphQLTypeName = GetGraphQLTypeName(typeName);
+            var classDeclaration = ClassDeclaration(classInfo);
 
-            var classDeclaration = SyntaxFactory.ClassDeclaration(graphQLTypeName)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddBaseListTypes(
-                    SyntaxFactory.SimpleBaseType(
-                        SyntaxFactory.GenericName(
-                            SyntaxFactory.Identifier("ObjectGraphType"))
-                        .AddTypeArgumentListArguments(SyntaxFactory.ParseTypeName(typeName))))
-                .AddMembers(CreateConstructor(properties, graphQLTypeName));
-
-            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("GQLG.Generated"))
+            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(@namespace))
                 .AddMembers(classDeclaration);
 
             var compilationUnit = SyntaxFactory.CompilationUnit()
@@ -37,6 +37,28 @@ namespace GQLG
                 .NormalizeWhitespace();
 
             return SyntaxFactory.SyntaxTree(compilationUnit, encoding: System.Text.Encoding.UTF8);
+        }
+
+        protected override ClassDeclarationSyntax ClassDeclaration(ClassInfo classInfo)
+        {
+            return base.ClassDeclaration(classInfo)
+                .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)));;
+        }
+
+        protected override string GetClassName(string type)
+        {
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                throw new ArgumentException($"\"{nameof(type)}\" не может быть пустым или содержать только пробел.", nameof(type));
+            }
+
+            return type + "GraphQLType";
+        }
+
+        protected override TypeSyntax GetBaseClass(string baseTypeName)
+        {
+            return SyntaxFactory.GenericName(SyntaxFactory.Identifier("ObjectGraphType"))
+                .AddTypeArgumentListArguments(SyntaxFactory.ParseTypeName(baseTypeName));
         }
 
         private ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
@@ -75,13 +97,14 @@ namespace GQLG
                         SyntaxKind.StringLiteralExpression,
                         SyntaxFactory.Literal(property.Name))),
 
-                SyntaxFactory.Argument(SyntaxFactory.SimpleLambdaExpression(
-                    SyntaxFactory.Parameter(SyntaxFactory.Identifier("x")),
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("x"),
-                        SyntaxFactory.IdentifierName(property.Name)
-                    ))),
+                SyntaxFactory.Argument(
+                    SyntaxFactory.SimpleLambdaExpression(
+                        SyntaxFactory.Parameter(
+                            SyntaxFactory.Identifier("x")),
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName("x"),
+                            SyntaxFactory.IdentifierName(property.Name)))),
 
                 SyntaxFactory.Argument(
                     SyntaxFactory.LiteralExpression(
@@ -111,31 +134,25 @@ namespace GQLG
 
             if (property.IsPrimitive)
             {
-                return property.Type;
+                return GetGraphQLPrimitiveType(property);
             }
 
             if (property.IsCollection && property.GenericArguments != null)
             {
-                return GetGraphQLTypeName(property.GenericArguments.FirstOrDefault());
+                return GetClassName(property.GenericArguments.FirstOrDefault());
             }
 
             if (property.GenericArguments != null && property.GenericArguments.Count > 0)
             {
-                return GetGraphQLTypeName(property.Type + "_" + property.GenericArguments.FirstOrDefault());
+                return GetClassName(property.Type + "_" + property.GenericArguments.FirstOrDefault());
             }
 
-            return GetGraphQLTypeName(property.Type);
+            return GetClassName(property.Type);
         }
 
-        private static string GetGraphQLTypeName(string type)
+        private static string GetGraphQLPrimitiveType(PropertyInfo property)
         {
-            if (string.IsNullOrWhiteSpace(type))
-            {
-                throw new ArgumentException($"\"{nameof(type)}\" не может быть пустым или содержать только пробел.", nameof(type));
-            }
-
-            return type + "GraphQLType";
+            return property.Type;
         }
-
     }
 }

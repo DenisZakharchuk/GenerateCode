@@ -7,7 +7,8 @@ namespace GQLG.CodeGeneration.Base
     public abstract class CodeGenerator
     {
         public abstract SyntaxTree Generate(ClassInfo classInfo);
-        public virtual string SubDir() {
+        public virtual string SubDir() 
+        {
             return "GraphQL";
         }
 

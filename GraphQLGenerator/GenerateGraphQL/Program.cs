@@ -3,9 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using GQLG.CodeGeneration.Base;
+using GQLG.CodeGeneration.GraphQL;
 using GQLG.Models.Factories;
 using Microsoft.CodeAnalysis;
-using Newtonsoft.Json;
 
 namespace GQLG
 {
@@ -39,11 +39,11 @@ namespace GQLG
                     // Generate JSON string for the type
                     var classInfo = ClassInfoFactory.Build(type);
 
-                    var graphQLTypeGenerators = new CodeGenerator[] { 
+                    var codeGenerators = new CodeGenerator[] { 
                         new GraphQLTypeGenerator() 
                     };
 
-                    foreach (var codeGenerator in graphQLTypeGenerators)
+                    foreach (var codeGenerator in codeGenerators)
                     {
                         // Generate GraphQL type class
                         SyntaxTree syntaxTree = codeGenerator.Generate(classInfo);
