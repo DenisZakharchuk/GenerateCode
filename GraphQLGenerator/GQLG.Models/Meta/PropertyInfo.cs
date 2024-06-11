@@ -10,5 +10,6 @@ namespace GQLG.Models.Meta
         public bool IsCollection { get; set; }
         public List<string> GenericArguments { get; set; }
         public bool IsPrimitive { get; set; }
+        public List<PropertyInfo> Includes { get; set; }
     }
 }

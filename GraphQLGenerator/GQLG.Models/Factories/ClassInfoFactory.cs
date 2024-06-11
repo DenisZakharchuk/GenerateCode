@@ -16,12 +16,12 @@ namespace GQLG.Models.Factories
             {
                 throw new ArgumentNullException(nameof(target));
             }
-
+            var breadcrumb = new List<Type>();
             var classInfo = new ClassInfo()
             {
                 Name = target.Name,
                 Namespace = target.Namespace,
-                Properties = CreateProperties(target).ToArray()
+                Properties = CreateProperties(target, breadcrumb).ToArray()
             };
 
             return classInfo;
@@ -30,24 +30,35 @@ namespace GQLG.Models.Factories
         // Generate method to create JSON string of public properties
         public static string Create(Type target)
         {
-            var properties = CreateProperties(target);
+            var properties = CreateProperties(target, new List<Type>());
 
             return JsonConvert.SerializeObject(properties, Formatting.Indented);
         }
 
-        private static List<Meta.PropertyInfo> CreateProperties(Type target)
+        private static List<Meta.PropertyInfo> CreateProperties(Type target, List<Type> exclude)
         {
             return target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                               .Select(p => new Meta.PropertyInfo
-                                               {
-                                                   Name = p.Name,
-                                                   Type = GetTypeName(p.PropertyType),
-                                                   IsNullable = IsNullable(p.PropertyType),
-                                                   IsCollection = IsCollection(p.PropertyType),
-                                                   IsPrimitive = IsPrimitive(p.PropertyType),
-                                                   GenericArguments = GetGenericArguments(p.PropertyType)
-                                               })
-                                               .ToList();
+                .Select(p =>
+                {
+                    var childExclude = new List<Type>(exclude);
+                    childExclude.Add(p.PropertyType);
+                    return new Meta.PropertyInfo
+                    {
+                        Name = p.Name,
+                        Type = GetTypeName(p.PropertyType),
+                        IsNullable = IsNullable(p.PropertyType),
+                        IsCollection = IsCollection(p.PropertyType),
+                        IsPrimitive = IsPrimitive(p.PropertyType),
+                        GenericArguments = GetGenericArguments(p.PropertyType),
+                        Includes = !exclude.Contains(p.PropertyType) && !IsCollection(p.PropertyType) && !IsNullable(p.PropertyType) && !IsPrimitive(p.PropertyType) ? Includes(p.PropertyType, childExclude) : new List<Meta.PropertyInfo>()
+                    };
+                })
+                .ToList();
+        }
+
+        private static List<Meta.PropertyInfo> Includes(Type propertyType, List<Type> exclude)
+        {
+            return CreateProperties(propertyType, exclude);
         }
 
         private static bool IsPrimitive(Type propertyType)
