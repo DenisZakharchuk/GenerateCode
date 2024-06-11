@@ -13,7 +13,7 @@ namespace GQLG.CodeGeneration.Base
         {
         }
 
-        protected abstract string GetClassName(string type);
+        public abstract string GetClassName(string type);
         protected abstract TypeSyntax GetBaseClass(ClassInfo classInfo);
 
         protected virtual ClassDeclarationSyntax ClassDeclaration(ClassInfo classInfo)
@@ -24,7 +24,12 @@ namespace GQLG.CodeGeneration.Base
                             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                             .AddBaseListTypes(
                                 GetBaseListTypes(classInfo))
-                .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)));
+                .AddMembers(GetMembers(classInfo));
+        }
+
+        public virtual MemberDeclarationSyntax[] GetMembers(ClassInfo classInfo)
+        {
+            return new[] { CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)) };
         }
 
         protected virtual BaseTypeSyntax[] GetBaseListTypes(ClassInfo classInfo)

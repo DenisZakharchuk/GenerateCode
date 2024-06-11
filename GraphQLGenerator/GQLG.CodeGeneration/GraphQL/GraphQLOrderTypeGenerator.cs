@@ -18,7 +18,7 @@ namespace GQLG.CodeGeneration.GraphQL
             return SyntaxFactory.ParseTypeName("GraphQLOrder");
         }
 
-        protected override string GetClassName(string type)
+        public override string GetClassName(string type)
         {
             if (string.IsNullOrWhiteSpace(type))
             {

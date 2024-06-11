@@ -20,7 +20,7 @@ namespace GQLG.CodeGeneration.GraphQL
             return SyntaxFactory.ParseTypeName("InputObjectGraphType");
         }
 
-        protected override string GetClassName(string type)
+        public override string GetClassName(string type)
         {
             if (string.IsNullOrWhiteSpace(type))
             {

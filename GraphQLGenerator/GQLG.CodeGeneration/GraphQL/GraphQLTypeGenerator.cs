@@ -25,7 +25,7 @@ namespace GQLG.CodeGeneration.GraphQL
         //        .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)));
         //}
 
-        protected override string GetClassName(string type)
+        public override string GetClassName(string type)
         {
             if (string.IsNullOrWhiteSpace(type))
             {

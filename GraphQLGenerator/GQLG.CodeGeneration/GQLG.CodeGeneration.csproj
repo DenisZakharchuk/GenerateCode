@@ -108,6 +108,7 @@
     <Compile Include="GraphQL\GraphQLFilterTypeGenerator.cs" />
     <Compile Include="GraphQL\GraphQLOrderTypeGenerator.cs" />
     <Compile Include="GraphQL\GraphQLDataReaderGenerator.cs" />
+    <Compile Include="GraphQL\GraphQLQueryGenerator.cs" />
     <Compile Include="GraphQL\GraphQLSchemaGenerator.cs" />
     <Compile Include="GraphQL\GraphQLTypeGenerator.cs" />
     <Compile Include="Base\SingleClassGenerator.cs" />

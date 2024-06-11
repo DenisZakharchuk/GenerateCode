@@ -26,7 +26,7 @@ namespace GQLG
             return baseTypeSyntaxes.ToArray();
         }
 
-        protected override string GetClassName(string type)
+        public override string GetClassName(string type)
         {
             return $"{type}DataReader";
         }
