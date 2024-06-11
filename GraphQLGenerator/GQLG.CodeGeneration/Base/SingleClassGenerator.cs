@@ -9,28 +9,29 @@ namespace GQLG.CodeGeneration.Base
 {
     public abstract class SingleClassGenerator : CodeGenerator
     {
-        protected SingleClassGenerator(Func<ClassInfo, string> @namespace)
+        protected SingleClassGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
         {
-            Namespace = @namespace;
         }
-        public virtual Func<ClassInfo, string> Namespace { get; set; }
+
         protected abstract string GetClassName(string type);
         protected abstract TypeSyntax GetBaseClass(ClassInfo classInfo);
-        protected virtual NamespaceDeclarationSyntax NamespaceDeclaration(ClassInfo classInfo)
-        {
-            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(Namespace(classInfo)));
-        }
+
         protected virtual ClassDeclarationSyntax ClassDeclaration(ClassInfo classInfo)
         {
             var graphQLTypeName = GetClassName(classInfo.Name);
-            var generatedClassBaseType = GetBaseClass(classInfo);
 
             return SyntaxFactory.ClassDeclaration(graphQLTypeName)
                             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                             .AddBaseListTypes(
-                                SyntaxFactory.SimpleBaseType(generatedClassBaseType))
-                .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name))); ;
+                                GetBaseListTypes(classInfo))
+                .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)));
         }
+
+        protected virtual BaseTypeSyntax[] GetBaseListTypes(ClassInfo classInfo)
+        {
+            return new[] { SyntaxFactory.SimpleBaseType(GetBaseClass(classInfo)) };
+        }
+
         protected virtual ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
         {
             return SyntaxFactory.ConstructorDeclaration(graphQLTypeName)
