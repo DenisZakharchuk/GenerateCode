@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Linq;
 using GQLG.CodeGeneration.Base;
 using GQLG.Models.Meta;
-using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GQLG
@@ -14,12 +15,24 @@ namespace GQLG
 
         protected override TypeSyntax GetBaseClass(ClassInfo classInfo)
         {
-            throw new NotImplementedException();
+            return SyntaxFactory.GenericName(SyntaxFactory.Identifier("GraphQLDataReader"))
+                .AddTypeArgumentListArguments(SyntaxFactory.ParseTypeName(classInfo.Name));
+        }
+
+        protected override BaseTypeSyntax[] GetBaseListTypes(ClassInfo classInfo)
+        {
+            var baseTypeSyntaxes = base.GetBaseListTypes(classInfo).ToList();
+            baseTypeSyntaxes.Add(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName($"I{GetClassName(classInfo.Name)}")));
+            return baseTypeSyntaxes.ToArray();
         }
 
         protected override string GetClassName(string type)
         {
-            throw new NotImplementedException();
+            return $"{type}DataReader";
+        }
+        public override string CodeKind()
+        {
+            return "DataReader";
         }
     }
 }

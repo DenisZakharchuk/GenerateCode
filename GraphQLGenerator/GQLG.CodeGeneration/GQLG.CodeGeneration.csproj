@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="Base\CodeGenerator.cs" />
     <Compile Include="Base\SingleInterfaceGenerator.cs" />
+    <Compile Include="GraphQL\GraphQLDataReaderInterfaceGenerator.cs" />
     <Compile Include="GraphQL\GraphQLFilterTypeGenerator.cs" />
     <Compile Include="GraphQL\GraphQLOrderTypeGenerator.cs" />
     <Compile Include="GraphQL\GraphQLDataReaderGenerator.cs" />
