@@ -33,31 +33,37 @@ namespace GQLG
 
         public override string GetClassName(string type)
         {
-            return $"IntegrationGraphQLQuery";
+            return $"{type}GraphQLQuery";
         }
-        public static ExpressionStatementSyntax GenerateGenericMethodInvocation(string methodName, string genericTypeName, string methodArgument)
+        public static ExpressionStatementSyntax GenerateGenericMethodInvocation(string methodName, PropertyInfo propertyInfo)
         {
             return SyntaxFactory.ExpressionStatement(
                 SyntaxFactory.InvocationExpression(
                     SyntaxFactory.GenericName(methodName)
                         .WithTypeArgumentList(
                             SyntaxFactory.TypeArgumentList(
+                                //SyntaxFactory.SeparatedList<TypeSyntax>(
+                                //    new[] {
+                                //        SyntaxFactory.ParseTypeName(propertyInfo.Type),
+                                //        SyntaxFactory.ParseTypeName(propertyInfo.Type),
+                                //        SyntaxFactory.ParseTypeName(propertyInfo.Type)
+                                //    }))))
                                 SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                    SyntaxFactory.IdentifierName(genericTypeName)))))
+                                    SyntaxFactory.IdentifierName(propertyInfo.Type)))))
                 .WithArgumentList(
                     SyntaxFactory.ArgumentList(
                         SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.Argument(
                                 SyntaxFactory.LiteralExpression(
                                     SyntaxKind.StringLiteralExpression,
-                                    SyntaxFactory.Literal(methodArgument)))))));
+                                    SyntaxFactory.Literal(propertyInfo.Name)))))));
         }
 
         protected override ConstructorDeclarationSyntax CreateConstructor(PropertyInfo[] properties, string graphQLTypeName)
         {
             var contstructor = base.CreateConstructor(properties, graphQLTypeName);
 
-            var constructorStatements = properties.Select(p => GenerateGenericMethodInvocation("Field", p.Type, p.Name)).ToArray();
+            var constructorStatements = properties.Select(p => GenerateGenericMethodInvocation("ConfigureReader", p)).ToArray();
 
             contstructor = contstructor.WithBody(SyntaxFactory.Block(constructorStatements));
 

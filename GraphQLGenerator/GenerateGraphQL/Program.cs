@@ -36,7 +36,7 @@ namespace GQLG
 
                 var types = assembly.GetTypes().Where(t => t.IsClass && t.GetProperties().Any());
 
-                var summaryClass = new ClassInfo();
+                var summaryClass = new ClassInfo() { Name = "Integration" };
                 var properties = new List<Models.Meta.PropertyInfo>();
 
                 foreach (var type in types)
@@ -48,7 +48,7 @@ namespace GQLG
                     properties.Add(new Models.Meta.PropertyInfo()
                     {
                         Name = classInfo.Name,
-                        Type = $"{graphQLDataReaderGenerator.Namespace}.{graphQLDataReaderGenerator.GetClassName(classInfo.Name)}"
+                        Type = $"{graphQLDataReaderGenerator.Namespace(classInfo)}.{graphQLDataReaderGenerator.GetClassName(classInfo.Name)}"
                     });
 
                     var codeGenerators = new CodeGenerator[] { 
