@@ -9,7 +9,7 @@ namespace GQLG.CodeGeneration.GraphQL
 {
     public class GraphQLOrderTypeGenerator : SingleClassGenerator
     {
-        public GraphQLOrderTypeGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        public GraphQLOrderTypeGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
         }
 

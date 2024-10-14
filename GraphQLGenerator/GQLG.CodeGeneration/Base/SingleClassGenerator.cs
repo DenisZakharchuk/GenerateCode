@@ -4,12 +4,13 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GQLG.CodeGeneration.Base
 {
     public abstract class SingleClassGenerator : CodeGenerator
     {
-        protected SingleClassGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        protected SingleClassGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
         }
 
@@ -48,12 +49,18 @@ namespace GQLG.CodeGeneration.Base
         {
             yield return "System";
             yield return "GraphQL.Types";
+            yield return "MijDim.Web.GraphQL.Types";
+            
+            if (!string.IsNullOrWhiteSpace(ClassInfo.Namespace))
+            {
+                yield return ClassInfo.Namespace;
+            }
         }
 
         public override SyntaxTree Generate(ClassInfo classInfo)
         {
             var compilationUnit = SyntaxFactory.CompilationUnit();
-            foreach (var ns in RequiredNamespaces())
+            foreach (var ns in RequiredNamespaces().OrderBy(x => x))
             {
                 compilationUnit = compilationUnit
                             .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)));

@@ -7,6 +7,9 @@ namespace GQLG
 {
     public class GraphQLSchemaGenerator : CodeGenerator
     {
+        public GraphQLSchemaGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
+        {
+        }
 
         public override SyntaxTree Generate(ClassInfo classInfo)
         {

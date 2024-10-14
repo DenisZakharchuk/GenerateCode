@@ -18,12 +18,8 @@ namespace GQLG
         {
             return "Query";
         }
-        public GraphQLQueryGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        public GraphQLQueryGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
-            if (@namespace is null)
-            {
-                throw new ArgumentNullException(nameof(@namespace));
-            }
         }
 
         protected override TypeSyntax GetBaseClass(ClassInfo classInfo)

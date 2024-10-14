@@ -3,19 +3,20 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.Linq;
 
 namespace GQLG.CodeGeneration.Base
 {
     public abstract class SingleInterfaceGenerator : CodeGenerator
     {
-        protected SingleInterfaceGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        protected SingleInterfaceGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
         }
 
         public override SyntaxTree Generate(ClassInfo classInfo)
         {
             var compilationUnit = SyntaxFactory.CompilationUnit();
-            foreach (var ns in RequiredNamespaces())
+            foreach (var ns in RequiredNamespaces().OrderBy(x => x))
             {
                 compilationUnit = compilationUnit
                             .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)));

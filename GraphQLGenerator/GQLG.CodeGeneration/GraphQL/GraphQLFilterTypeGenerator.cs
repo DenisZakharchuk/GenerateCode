@@ -11,7 +11,7 @@ namespace GQLG.CodeGeneration.GraphQL
 {
     public class GraphQLFilterTypeGenerator : SingleClassGenerator
     {
-        public GraphQLFilterTypeGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        public GraphQLFilterTypeGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
         }
 

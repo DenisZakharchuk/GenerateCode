@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GQLG.CodeGeneration.Base;
 using GQLG.Models.Meta;
@@ -9,7 +10,7 @@ namespace GQLG
 {
     public class GraphQLDataReaderGenerator : SingleClassGenerator
     {
-        public GraphQLDataReaderGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        public GraphQLDataReaderGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
         }
 
@@ -33,6 +34,15 @@ namespace GQLG
         public override string CodeKind()
         {
             return "DataReader";
+        }
+        public override IEnumerable<string> RequiredNamespaces()
+        {
+            foreach (var item in base.RequiredNamespaces())
+            {
+                yield return item;
+            }
+
+            yield return "MijDim.Web.GraphQL.DataReaders";
         }
     }
 }

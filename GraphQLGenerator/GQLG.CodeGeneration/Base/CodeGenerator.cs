@@ -10,13 +10,15 @@ namespace GQLG.CodeGeneration.Base
     public abstract class CodeGenerator
     {
         public virtual Func<ClassInfo, string> Namespace { get; set; }
+        protected virtual ClassInfo ClassInfo { get; private set; }
 
-        protected CodeGenerator(Func<ClassInfo, string> @namespace)
+        protected CodeGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace)
         {
             Namespace = @namespace;
+            ClassInfo = classInfo;
         }
 
-        protected CodeGenerator() : this(c => "Generated")
+        protected CodeGenerator(ClassInfo classInfo) : this(classInfo, c => "Generated")
         {
         }
 
@@ -38,6 +40,11 @@ namespace GQLG.CodeGeneration.Base
         protected virtual NamespaceDeclarationSyntax NamespaceDeclaration(ClassInfo classInfo)
         {
             return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(Namespace(classInfo)));
+        }
+
+        public virtual string GetClassFileName()
+        {
+            return $"{ClassInfo.Name}{CodeKind()}.cs";
         }
     }
 }

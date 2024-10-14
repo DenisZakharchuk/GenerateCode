@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GQLG.CodeGeneration.Base;
 using GQLG.Models.Meta;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,7 +9,7 @@ namespace GQLG
 {
     public class GraphQLDataReaderInterfaceGenerator : SingleInterfaceGenerator
     {
-        public GraphQLDataReaderInterfaceGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        public GraphQLDataReaderInterfaceGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
         }
 
@@ -24,7 +25,22 @@ namespace GQLG
 
         public override string CodeKind()
         {
-            return "IDataReader";
+            return $"IDataReader";
+        }
+
+        public override string GetClassFileName()
+        {
+            return $"I{ClassInfo.Name}DataReader.cs";
+        }
+
+        public override IEnumerable<string> RequiredNamespaces()
+        {
+            foreach (var item in base.RequiredNamespaces())
+            {
+                yield return item;
+            }
+
+            yield return "MijDim.Web.GraphQL.DataReaders";
         }
     }
 }

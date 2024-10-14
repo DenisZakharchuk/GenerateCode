@@ -11,19 +11,13 @@ namespace GQLG.CodeGeneration.GraphQL
 {
     public class GraphQLTypeGenerator : SingleClassGenerator
     {
-        public GraphQLTypeGenerator(): base(classInfo => "GQLG.Generated")
+        public GraphQLTypeGenerator(ClassInfo classInfo) : base(classInfo, c => "GQLG.Generated")
         {
         }
 
-        public GraphQLTypeGenerator(Func<ClassInfo, string> @namespace) : base(@namespace)
+        public GraphQLTypeGenerator(ClassInfo classInfo, Func<ClassInfo, string> @namespace) : base(classInfo, @namespace)
         {
         }
-
-        //protected override ClassDeclarationSyntax ClassDeclaration(ClassInfo classInfo)
-        //{
-        //    return base.ClassDeclaration(classInfo)
-        //        .AddMembers(CreateConstructor(classInfo.Properties, GetClassName(classInfo.Name)));
-        //}
 
         public override string GetClassName(string type)
         {

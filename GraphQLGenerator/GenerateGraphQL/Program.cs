@@ -41,9 +41,10 @@ namespace GQLG
 
                 foreach (var type in types)
                 {
-                    var graphQLDataReaderGenerator = new GraphQLDataReaderGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.DataReader");
-
                     var classInfo = ClassInfoFactory.Build(type);
+
+                    var graphQLDataReaderGenerator = new GraphQLDataReaderGenerator(classInfo, c => $"MijDim.Web.GraphQL.{c.Name}.Types.DataReader");
+
 
                     properties.Add(new Models.Meta.PropertyInfo()
                     {
@@ -52,11 +53,11 @@ namespace GQLG
                     });
 
                     var codeGenerators = new CodeGenerator[] { 
-                        new GraphQLTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Object"),
-                        new GraphQLFilterTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Filters"),
-                        new GraphQLOrderTypeGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.Orders"),
+                        new GraphQLTypeGenerator(classInfo, c => $"MijDim.Web.GraphQL.{c.Name}.Types.Object"),
+                        new GraphQLFilterTypeGenerator(classInfo, c => $"MijDim.Web.GraphQL.{c.Name}.Types.Filters"),
+                        new GraphQLOrderTypeGenerator(classInfo, c => $"MijDim.Web.GraphQL.{c.Name}.Types.Orders"),
                         graphQLDataReaderGenerator,
-                        new GraphQLDataReaderInterfaceGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Types.DataReader"),
+                        new GraphQLDataReaderInterfaceGenerator(classInfo, c => $"MijDim.Web.GraphQL.{c.Name}.Types.DataReader"),
                     };
 
                     foreach (var codeGenerator in codeGenerators)
@@ -69,15 +70,15 @@ namespace GQLG
 
                         // Ensure output directory exists
                         Directory.CreateDirectory(outputSubFolder);
-                        
-                        var outputCsPath = Path.Combine(outputSubFolder, $"{type.Name}{codeGenerator.CodeKind()}.cs");
+
+                        var outputCsPath = Path.Combine(outputSubFolder, codeGenerator.GetClassFileName());
 
                         File.WriteAllText(outputCsPath, syntaxTree.ToString());
                     }
                 }
 
                 summaryClass.Properties = properties.ToArray();
-                var queryCodeGenerator = new GraphQLQueryGenerator(c => $"MijDim.Web.GraphQL.{c.Name}.Query");
+                var queryCodeGenerator = new GraphQLQueryGenerator(summaryClass, c => $"MijDim.Web.GraphQL.{c.Name}.Query");
 
                 var queryClass = queryCodeGenerator.Generate(summaryClass);
                 var queryOutputSubFolder = Path.Combine(outputFolder, queryCodeGenerator.SubDir());
