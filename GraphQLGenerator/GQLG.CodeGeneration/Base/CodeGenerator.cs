@@ -5,6 +5,25 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 
+//namespace CodeGeneration.Base
+//{
+//    public abstract class CodeGenerator
+//    {
+//        private readonly IClassInfoProvider _classInfoProvider;
+
+//        protected CodeGenerator(IClassInfoProvider classInfoProvider)
+//        {
+//            _classInfoProvider = classInfoProvider;
+//        }
+
+//        public abstract SyntaxTree Generate(ClassInfo classInfo);
+        
+//        protected virtual NamespaceDeclarationSyntax NamespaceDeclaration(ClassInfo classInfo)
+//        {
+//            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(classInfoProvider.Namespace()));
+//        }
+//    }
+//}
 namespace GQLG.CodeGeneration.Base
 {
     public abstract class CodeGenerator
