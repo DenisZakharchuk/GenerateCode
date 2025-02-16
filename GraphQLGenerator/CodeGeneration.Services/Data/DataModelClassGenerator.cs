@@ -5,7 +5,7 @@ namespace CodeGeneration.Services.Data
 {
     public class DataModelClassGenerator : SingleClassGenerator
     {
-        public DataModelClassGenerator(IDataModelInfoProvider classInfoProvider) : base(classInfoProvider)
+        public DataModelClassGenerator(IDataModelInfoProvider classInfoProvider, IDataModelInfoProvider baseModelInfoProvider) : base(classInfoProvider, baseModelInfoProvider)
         {
         }
     }
