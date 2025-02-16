@@ -6,8 +6,13 @@ namespace CodeGeneration.Services.Base
 {
     public abstract class SingleClassGenerator : CodeGenerator
     {
-        protected SingleClassGenerator(ICodingUnitInfoProvider classInfoProvider) : base(classInfoProvider)
+        private readonly ICodingUnitInfoProvider _baseClassInfoProvider;
+
+        public ICodingUnitInfoProvider BaseClassInfoProvider => _baseClassInfoProvider;
+
+        protected SingleClassGenerator(ICodingUnitInfoProvider classInfoProvider, ICodingUnitInfoProvider baseClassInfoProvider) : base(classInfoProvider)
         {
+            _baseClassInfoProvider = baseClassInfoProvider;
         }
         protected override IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations()
         {
@@ -17,9 +22,9 @@ namespace CodeGeneration.Services.Base
             if (CodingUnitInfoProvider.HasBase)
             {
                 classDeclarationSyntax = classDeclarationSyntax.AddBaseListTypes(
-                    GetBaseListTypes());
+                    GetBaseTypes().ToArray());
             }
-
+            
             classDeclarationSyntax = classDeclarationSyntax.AddMembers(
                 GetMembers().ToArray());
 
@@ -38,7 +43,11 @@ namespace CodeGeneration.Services.Base
                 .WithBody(SyntaxFactory.Block());
         }
 
-        protected abstract BaseTypeSyntax[] GetBaseListTypes();
+        protected virtual IEnumerable<BaseTypeSyntax> GetBaseTypes()
+        {
+            var name = SyntaxFactory.ParseTypeName(_baseClassInfoProvider.Name);
+            yield return SyntaxFactory.SimpleBaseType(name);
+        }
 
         protected virtual string GetClassName()
         {

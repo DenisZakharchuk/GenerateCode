@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CodeGeneration.Services.Base
 {
-    public abstract class CodeGenerator
+    public abstract class CodeGenerator : ICodeGenerator
     {
         private readonly ICodingUnitInfoProvider _codingUnitInfoProvider;
 
@@ -49,4 +49,8 @@ namespace CodeGeneration.Services.Base
         }
     }
 
+    public interface ICodeGenerator
+    {
+        SyntaxTree Generate();
+    }
 }

@@ -40,8 +40,11 @@ namespace GQLG.Models.Factories
             return target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Select(p =>
                 {
-                    var childExclude = new List<Type>(exclude);
-                    childExclude.Add(p.PropertyType);
+                    var childExclude = new List<Type>(exclude)
+                    {
+                        p.PropertyType
+                    };
+
                     return new Meta.PropertyInfo
                     {
                         Name = p.Name,
@@ -50,7 +53,12 @@ namespace GQLG.Models.Factories
                         IsCollection = IsCollection(p.PropertyType),
                         IsPrimitive = IsPrimitive(p.PropertyType),
                         GenericArguments = GetGenericArguments(p.PropertyType),
-                        Includes = !exclude.Contains(p.PropertyType) && !IsCollection(p.PropertyType) && !IsNullable(p.PropertyType) && !IsPrimitive(p.PropertyType) ? Includes(p.PropertyType, childExclude) : new List<Meta.PropertyInfo>()
+                        Includes = !exclude.Contains(p.PropertyType)
+                            && !IsCollection(p.PropertyType)
+                            && !IsNullable(p.PropertyType)
+                            && !IsPrimitive(p.PropertyType) 
+                            ? Includes(p.PropertyType, childExclude) 
+                            : new List<Meta.PropertyInfo>()
                     };
                 })
                 .ToList();
