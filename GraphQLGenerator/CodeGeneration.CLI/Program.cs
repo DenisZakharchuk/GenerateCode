@@ -1,10 +1,11 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Models.CodingUnits.Providers;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        var classInfo = new CodingUnit() { 
+        var modelInfo = new CodingUnit() { 
             Name = "Customer",
             Namespace = "System",
             Properties = [
@@ -25,6 +26,10 @@ internal class Program
             ]
         };
 
-        
+        var providers = new ICodingUnitInfoProvider[]
+        {
+            new DataModelInfoProvider(modelInfo),
+            new ClassInfoProvider(modelInfo),
+        }
     }
 }

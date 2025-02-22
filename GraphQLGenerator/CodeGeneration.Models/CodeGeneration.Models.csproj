@@ -10,4 +10,9 @@
     <ProjectReference Include="..\CodeGeneration.Common\CodeGeneration.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CodingUnits\Providers\Classes\" />
+    <Folder Include="CodingUnits\Providers\Properties\" />
+  </ItemGroup>
+
 </Project>

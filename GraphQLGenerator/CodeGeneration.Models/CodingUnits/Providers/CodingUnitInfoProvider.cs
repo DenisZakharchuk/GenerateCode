@@ -4,17 +4,18 @@ namespace CodeGeneration.Models.CodingUnits.Providers
 {
     public abstract class CodingUnitInfoProvider : ICodingUnitInfoProvider
     {
+        private readonly CodingUnit codingUnit;
+
         protected CodingUnitInfoProvider(CodingUnit codingUnit)
         {
-            Name = codingUnit.Name;
-            Namespace = codingUnit.Namespace;
-            HasBase = false;
-            RequiredNamespaces = [];
+            this.codingUnit = codingUnit ?? throw new ArgumentNullException(nameof(codingUnit));
         }
 
-        public string Name { get; }
-        public string? Namespace { get; }
-        public IEnumerable<string> RequiredNamespaces { get; }
-        public bool HasBase { get; }
+        public abstract string Name { get; }
+        public abstract string? Namespace { get; }
+        public abstract IEnumerable<string> RequiredNamespaces { get; }
+        public abstract bool HasBase { get; }
+
+        protected CodingUnit CodingUnit => codingUnit;
     }
 }
