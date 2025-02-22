@@ -1,6 +1,6 @@
 ﻿namespace CodeGeneration.Models.CodingUnits.Providers.Default
 {
-    internal class DefaultBaseClassInfoProvider : IDefaultBaseClassInfoProvider
+    public class DefaultBaseClassInfoProvider : IDefaultBaseClassInfoProvider
     {
         public string Name => "Object";
 
@@ -10,7 +10,7 @@
 
         public bool HasBase => false;
     }
-    internal interface IDefaultBaseClassInfoProvider : IClassInfoProvider
+    public interface IDefaultBaseClassInfoProvider : IModelInfoProvider
     {
     }
 }

@@ -24,7 +24,7 @@ namespace CodeGeneration.Models.CodingUnits.Providers.Naming
         }
         public virtual string GetNamespace(CodingUnit unit)
         {
-            return new string[] { BaseNamespace, GetDescriptor(), unit.Namespace ?? DefaultNamespace }.
+            return new string[] { BaseNamespace, unit.Namespace ?? DefaultNamespace, GetDescriptor() }.
                 Where(s => !string.IsNullOrWhiteSpace(s)).
                 Aggregate((h, t) => h + "." + t);
         }

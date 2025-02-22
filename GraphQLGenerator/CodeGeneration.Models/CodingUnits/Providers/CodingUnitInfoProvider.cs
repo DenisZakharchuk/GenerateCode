@@ -1,21 +1,25 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Models.CodingUnits.Providers.Naming;
 
 namespace CodeGeneration.Models.CodingUnits.Providers
 {
-    public abstract class CodingUnitInfoProvider : ICodingUnitInfoProvider
+    public abstract class CodingUnitInfoProvider<TCodingUnit> : ICodingUnitInfoProvider
+        where TCodingUnit: CodingUnit
     {
-        private readonly CodingUnit codingUnit;
+        private readonly TCodingUnit codingUnit;
+        private readonly INamingProvider namingProvider;
 
-        protected CodingUnitInfoProvider(CodingUnit codingUnit)
+        protected CodingUnitInfoProvider(TCodingUnit codingUnit, INamingProvider namingProvider)
         {
             this.codingUnit = codingUnit ?? throw new ArgumentNullException(nameof(codingUnit));
+            this.namingProvider = namingProvider ?? throw new ArgumentNullException(nameof(namingProvider));
         }
 
-        public abstract string Name { get; }
-        public abstract string? Namespace { get; }
-        public abstract IEnumerable<string> RequiredNamespaces { get; }
-        public abstract bool HasBase { get; }
+        public string Name => namingProvider.GetName(codingUnit);
+        public string? Namespace => namingProvider.GetNamespace(codingUnit);
+        public virtual IEnumerable<string> RequiredNamespaces => [];
+        public virtual bool HasBase => false;
 
-        protected CodingUnit CodingUnit => codingUnit;
+        protected TCodingUnit CodingUnit => codingUnit;
     }
 }

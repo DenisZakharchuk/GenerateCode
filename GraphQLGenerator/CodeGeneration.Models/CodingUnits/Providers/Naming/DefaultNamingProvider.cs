@@ -1,6 +1,6 @@
 ﻿namespace CodeGeneration.Models.CodingUnits.Providers.Naming
 {
-    public class DefaultNamingProvider : NamingProvider, INamingProvider
+    public class DefaultNamingProvider : NamingProvider, IDefaultNamingProvider
     {
         public DefaultNamingProvider(string baseNamespace, string defaultNamespace) : base(baseNamespace, defaultNamespace)
         {
@@ -10,5 +10,9 @@
         {
             return "";
         }
+    }
+
+    public interface IDefaultNamingProvider : INamingProvider
+    {
     }
 }

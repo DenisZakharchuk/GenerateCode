@@ -1,6 +1,6 @@
 ﻿namespace CodeGeneration.Models.CodingUnits.Providers
 {
-    public interface IDataModelInfoProvider : IClassInfoProvider
+    public interface IDataModelInfoProvider : IModelInfoProvider
     {
     }
 }

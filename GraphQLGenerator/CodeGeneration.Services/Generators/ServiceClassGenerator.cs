@@ -5,7 +5,7 @@ namespace CodeGeneration.Services.Generators
 {
     public class ServiceClassGenerator : SingleClassGenerator, IServiceClassGenerator
     {
-        public ServiceClassGenerator(IClassInfoProvider classInfoProvider, ICodingUnitInfoProvider baseClassInfoProvider) : base(classInfoProvider, baseClassInfoProvider)
+        public ServiceClassGenerator(IModelInfoProvider classInfoProvider, ICodingUnitInfoProvider baseClassInfoProvider) : base(classInfoProvider, baseClassInfoProvider)
         {
         }
     }
