@@ -1,6 +1,6 @@
 ﻿namespace CodeGeneration.Models.CodingUnits.Meta
 {
-    public class ClassInfo
+    public class CodingUnit
     {
         public PropertyInfo[]? Properties { get; set; }
         public required string Name { get; set; }

@@ -4,6 +4,6 @@ namespace CodeGeneration.Models.Factories
 {
     public interface IReflectionFactory
     {
-        ClassInfo Build(Type target);
+        CodingUnit Build(Type target);
     }
 }

@@ -6,14 +6,14 @@ namespace CodeGeneration.Models.Factories
 {
     public class ReflectionFactory : IReflectionFactory
     {
-        public ClassInfo Build(Type target)
+        public CodingUnit Build(Type target)
         {
             if (target is null)
             {
                 throw new ArgumentNullException(nameof(target));
             }
             var breadcrumb = new List<Type>();
-            var classInfo = new ClassInfo()
+            var classInfo = new CodingUnit()
             {
                 Name = target.Name,
                 Namespace = target.Namespace,

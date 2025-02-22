@@ -2,10 +2,8 @@
 {
     public interface ICodingUnitInfoProvider
     {
-        public string Name { get; }
-
-        string Namespace { get; }
-
+        string Name { get; }
+        string? Namespace { get; }
         IEnumerable<string> RequiredNamespaces { get; }
         bool HasBase { get; }
     }
