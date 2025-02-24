@@ -1,6 +1,6 @@
 ﻿namespace CodeGeneration.Services.Generators
 {
-    internal interface IDataModelClassGenerator
+    public interface IDataModelClassGenerator
     {
     }
 }

@@ -6,7 +6,7 @@ namespace CodeGeneration.Services.Base
 {
     public abstract class SingleInterfaceGenerator : CodeGenerator
     {
-        protected SingleInterfaceGenerator(IInterfaceInfoProvider classInfoProvider) : base(classInfoProvider)
+        protected SingleInterfaceGenerator(IBehaviourInfoProvider classInfoProvider) : base(classInfoProvider)
         {
         }
 

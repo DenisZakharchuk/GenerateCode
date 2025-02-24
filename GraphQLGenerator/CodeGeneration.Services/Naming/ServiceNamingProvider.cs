@@ -1,6 +1,6 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
 
-namespace CodeGeneration.Models.CodingUnits.Providers.Naming
+namespace CodeGeneration.Services.Naming
 {
     public class ServiceNamingProvider : NamingProvider, IServiceNamingProvider
     {

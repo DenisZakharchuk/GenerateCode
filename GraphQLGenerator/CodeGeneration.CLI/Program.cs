@@ -1,8 +1,6 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
-using CodeGeneration.Models.CodingUnits.Providers;
-using CodeGeneration.Models.CodingUnits.Providers.Default;
 using CodeGeneration.Models.CodingUnits.Providers.Factories;
-using CodeGeneration.Models.CodingUnits.Providers.Naming;
+using CodeGeneration.Services.Naming;
 using CodeGeneration.Services.Generators;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -71,6 +69,9 @@ internal class Program
 
         servicesCollection.AddTransient<IDefaultNamingProvider>(sp => new DefaultNamingProvider(BaseNamespace, DefaultNamespace));
 
+        servicesCollection.AddTransient<IServiceClassGenerator, ServiceClassGenerator>();
+        servicesCollection.AddTransient<IDataModelClassGenerator, DataModelClassGenerator>();
+
         var serviceProvider = servicesCollection.BuildServiceProvider();
 
         var factory = serviceProvider.GetRequiredService<ICodingInfoProviderFactory>();
@@ -79,16 +80,10 @@ internal class Program
         {
             foreach (var key in serviceKeys)
             {
-                var provider = factory.CreateCodingUnitInfoProvider(modelInfo, key);
-
+                var codingUnitInfoProvider = factory.CreateCodingUnitInfoProvider(modelInfo, key);
             }
         }
 
 
-        foreach (var provider in providers)
-        {
-            ServiceClassGenerator serviceClassGenerator = new(provider, new DefaultBaseClassInfoProvider());
-
-        }
     }
 }

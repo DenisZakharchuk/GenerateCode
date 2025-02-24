@@ -1,5 +1,5 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
-using CodeGeneration.Models.CodingUnits.Providers.Naming;
+using CodeGeneration.Services.Naming;
 
 namespace CodeGeneration.Models.CodingUnits.Providers
 {
