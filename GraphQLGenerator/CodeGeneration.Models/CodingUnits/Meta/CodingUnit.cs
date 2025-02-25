@@ -1,9 +1,17 @@
-﻿namespace CodeGeneration.Models.CodingUnits.Meta
+﻿
+namespace CodeGeneration.Models.CodingUnits.Meta
 {
-    public class Behaviour : CodingUnit
+    public class Behaviour : Class
     {
-
+        public IEnumerable<MethodInfo>? Methods { get; set; }
     }
+
+    public class MethodInfo
+    {
+        public required string Name { get; set; }
+        public int MyProperty { get; set; }
+    }
+
     public class Model : Class
     {
         public PropertyInfo[]? Properties { get; set; }

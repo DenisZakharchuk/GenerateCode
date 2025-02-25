@@ -6,11 +6,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CodeGeneration.Services.Base
 {
-    public abstract class SingleClassGenerator : CodeGenerator<Class>
+    public abstract class SingleClassGenerator<TCodingUnit> : CodeGenerator<TCodingUnit>
+        where TCodingUnit: Class
     {
         protected SingleClassGenerator(
             INamingProvider namingProvider,
-            ICodingUnitContextProvider<Class> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
+            ICodingUnitContextProvider<TCodingUnit> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
         {
         }
 

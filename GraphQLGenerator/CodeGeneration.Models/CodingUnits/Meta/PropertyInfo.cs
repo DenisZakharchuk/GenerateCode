@@ -4,6 +4,7 @@
     {
         public required string Name { get; set; }
         public required string Type { get; set; }
+        public CodingUnit? PropertyType { get; set; }
         public bool IsNullable { get; set; }
         public bool IsCollection { get; set; }
         public List<string>? GenericArguments { get; set; }

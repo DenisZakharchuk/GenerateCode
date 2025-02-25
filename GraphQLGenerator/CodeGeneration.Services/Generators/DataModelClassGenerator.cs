@@ -5,14 +5,5 @@ using CodeGeneration.Services.Naming;
 
 namespace CodeGeneration.Services.Generators
 {
-    public class DataModelClassGenerator : SingleClassGenerator, IDataModelClassGenerator
-    {
-        public DataModelClassGenerator(INamingProvider namingProvider, ICodingUnitContextProvider<Class> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
-        {
-        }
-
-        public override void Init(Class codingUnit)
-        {
-        }
-    }
+    
 }

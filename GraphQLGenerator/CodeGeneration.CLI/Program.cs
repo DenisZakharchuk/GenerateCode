@@ -3,6 +3,7 @@
 using CodeGeneration.Services.Naming;
 using CodeGeneration.Services.Generators;
 using Microsoft.Extensions.DependencyInjection;
+using CodeGeneration.Services.Base;
 
 internal class Program
 {
@@ -70,7 +71,7 @@ internal class Program
         servicesCollection.AddTransient<IDefaultNamingProvider>(sp => new DefaultNamingProvider(BaseNamespace, DefaultNamespace));
 
         servicesCollection.AddTransient<IServiceClassGenerator, ServiceClassGenerator>();
-        servicesCollection.AddTransient<IDataModelClassGenerator, DataModelClassGenerator>();
+        servicesCollection.AddTransient<IModelGenerator, ModelGenerator>();
 
         var serviceProvider = servicesCollection.BuildServiceProvider();
 
