@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="CodingUnits\Providers\Classes\" />
+    <Folder Include="CodingUnits\Providers\Factories\" />
     <Folder Include="CodingUnits\Providers\Properties\" />
   </ItemGroup>
 

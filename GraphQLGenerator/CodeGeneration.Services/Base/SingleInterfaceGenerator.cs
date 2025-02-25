@@ -1,12 +1,14 @@
-﻿using CodeGeneration.Models.CodingUnits.Providers;
+﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Services.Context;
+using CodeGeneration.Services.Naming;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CodeGeneration.Services.Base
 {
-    public abstract class SingleInterfaceGenerator : CodeGenerator
+    public abstract class SingleInterfaceGenerator : CodeGenerator<Behaviour>
     {
-        protected SingleInterfaceGenerator(IBehaviourInfoProvider classInfoProvider) : base(classInfoProvider)
+        protected SingleInterfaceGenerator(INamingProvider namingProvider, ICodingUnitContextProvider<Behaviour> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
         {
         }
 
@@ -23,9 +25,7 @@ namespace CodeGeneration.Services.Base
 
         protected virtual string GetInterfaceName()
         {
-            return CodingUnitInfoProvider.Name.StartsWith('I')
-                ? CodingUnitInfoProvider.Name
-                : $"I{CodingUnitInfoProvider.Name}";
+            return NamingProvider.GetName(CodingUnit);
         }
         protected abstract TypeSyntax GetBaseInterface();
     }

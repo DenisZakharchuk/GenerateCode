@@ -1,5 +1,5 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
-using CodeGeneration.Models.CodingUnits.Providers.Factories;
+
 using CodeGeneration.Services.Naming;
 using CodeGeneration.Services.Generators;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,7 +57,7 @@ internal class Program
 
         IServiceCollection servicesCollection = new ServiceCollection();
 
-        servicesCollection.AddTransient<ICodingInfoProviderFactory, CodingInfoProviderFactory>();
+        //servicesCollection.AddTransient<ICodingInfoProviderFactory, CodingInfoProviderFactory>();
 
         foreach (var serviceKey in serviceKeys)
         {
@@ -74,13 +74,13 @@ internal class Program
 
         var serviceProvider = servicesCollection.BuildServiceProvider();
 
-        var factory = serviceProvider.GetRequiredService<ICodingInfoProviderFactory>();
+        //var factory = serviceProvider.GetRequiredService<ICodingInfoProviderFactory>();
 
         foreach (var modelInfo in models)
         {
             foreach (var key in serviceKeys)
             {
-                var codingUnitInfoProvider = factory.CreateCodingUnitInfoProvider(modelInfo, key);
+                //var codingUnitInfoProvider = factory.CreateCodingUnitInfoProvider(modelInfo, key);
             }
         }
 

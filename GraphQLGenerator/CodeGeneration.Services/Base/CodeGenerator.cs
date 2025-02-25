@@ -1,25 +1,55 @@
-﻿using CodeGeneration.Models.CodingUnits.Providers;
+﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Services.Context;
+using CodeGeneration.Services.Naming;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CodeGeneration.Services.Base
 {
+    public abstract class CodeGenerator<TCodingUnit> : CodeGenerator, ICodeGenerator<TCodingUnit>
+        where TCodingUnit : CodingUnit
+    {
+        private readonly TCodingUnit? codingUnit;
+
+        protected virtual TCodingUnit CodingUnit => codingUnit ?? throw new ApplicationException($"{nameof(codingUnit)} is not initiated. Call {nameof(Init)} method first!"); 
+        
+        protected CodeGenerator(INamingProvider namingProvider, ICodingUnitContextProvider<TCodingUnit> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
+        {
+        }
+
+        public virtual void Init(TCodingUnit codingUnit)
+        {
+            if(CodingUnitContextProvider is ICodingUnitContextProvider<TCodingUnit> c)
+            {
+                c.Init(codingUnit);
+            }
+        }
+
+        protected override NamespaceDeclarationSyntax NamespaceDeclaration()
+        {
+            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(NamingProvider.GetNamespace(CodingUnit)));
+        }
+    }
     public abstract class CodeGenerator : ICodeGenerator
     {
-        private readonly ICodingUnitInfoProvider _codingUnitInfoProvider;
+        private readonly INamingProvider namingProvider;
+        private readonly ICodingUnitContextProvider codingUnitContextProvider;
 
-        protected ICodingUnitInfoProvider CodingUnitInfoProvider => _codingUnitInfoProvider;
+        public INamingProvider NamingProvider => namingProvider;
+        public ICodingUnitContextProvider CodingUnitContextProvider => codingUnitContextProvider;
 
-        protected CodeGenerator(ICodingUnitInfoProvider codingUnitInfoProvider)
+
+        protected CodeGenerator(INamingProvider namingProvider, ICodingUnitContextProvider codingUnitContextProvider)
         {
-            _codingUnitInfoProvider = codingUnitInfoProvider;
+            this.namingProvider = namingProvider ?? throw new ArgumentNullException(nameof(namingProvider));
+            this.codingUnitContextProvider = codingUnitContextProvider ?? throw new ArgumentNullException(nameof(codingUnitContextProvider));
+            //_codingUnitInfoProvider = codingUnitInfoProvider;
         }
 
         public SyntaxTree Generate()
         {
-            var compilationUnit = SyntaxFactory.CompilationUnit();
-            compilationUnit = AppendUsings(compilationUnit);
+            var compilationUnit = CreateRootCompilationUnit();
 
             compilationUnit = compilationUnit
                 .AddMembers(NamespaceDeclaration()
@@ -29,12 +59,18 @@ namespace CodeGeneration.Services.Base
             return SyntaxFactory.SyntaxTree(compilationUnit, encoding: System.Text.Encoding.UTF8);
         }
 
-        protected abstract IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations();
+        protected virtual CompilationUnitSyntax CreateRootCompilationUnit()
+        {
+            var compilationUnit = SyntaxFactory.CompilationUnit();
+            compilationUnit = AppendUsings(compilationUnit);
+            return compilationUnit;
+        }
 
+        protected abstract IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations();
 
         protected virtual CompilationUnitSyntax AppendUsings(CompilationUnitSyntax compilationUnit)
         {
-            foreach (var ns in _codingUnitInfoProvider.RequiredNamespaces.OrderBy(x => x))
+            foreach (var ns in CodingUnitContextProvider.RequiredNamespaces.OrderBy(x => x))
             {
                 compilationUnit = compilationUnit
                             .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)));
@@ -43,14 +79,6 @@ namespace CodeGeneration.Services.Base
             return compilationUnit;
         }
 
-        protected virtual NamespaceDeclarationSyntax NamespaceDeclaration()
-        {
-            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(_codingUnitInfoProvider.Namespace));
-        }
-    }
-
-    public interface ICodeGenerator
-    {
-        SyntaxTree Generate();
+        protected abstract NamespaceDeclarationSyntax NamespaceDeclaration();
     }
 }

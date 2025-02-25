@@ -1,25 +1,25 @@
-﻿using CodeGeneration.Models.CodingUnits.Providers;
+﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Services.Context;
+using CodeGeneration.Services.Naming;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CodeGeneration.Services.Base
 {
-    public abstract class SingleClassGenerator : CodeGenerator
+    public abstract class SingleClassGenerator : CodeGenerator<Class>
     {
-        private readonly ICodingUnitInfoProvider _baseClassInfoProvider;
-
-        public ICodingUnitInfoProvider BaseClassInfoProvider => _baseClassInfoProvider;
-
-        protected SingleClassGenerator(ICodingUnitInfoProvider classInfoProvider, ICodingUnitInfoProvider baseClassInfoProvider) : base(classInfoProvider)
+        protected SingleClassGenerator(
+            INamingProvider namingProvider,
+            ICodingUnitContextProvider<Class> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
         {
-            _baseClassInfoProvider = baseClassInfoProvider;
         }
+
         protected override IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations()
         {
             var classDeclarationSyntax = SyntaxFactory.ClassDeclaration(GetClassName())
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-            if (CodingUnitInfoProvider.HasBase)
+            if (CodingUnitContextProvider.HasBase)
             {
                 classDeclarationSyntax = classDeclarationSyntax.AddBaseListTypes(
                     GetBaseTypes().ToArray());
@@ -45,13 +45,17 @@ namespace CodeGeneration.Services.Base
 
         protected virtual IEnumerable<BaseTypeSyntax> GetBaseTypes()
         {
-            var name = SyntaxFactory.ParseTypeName(_baseClassInfoProvider.Name);
-            yield return SyntaxFactory.SimpleBaseType(name);
+            Model? baseModel = CodingUnit.BaseModel;
+            if (baseModel != null)
+            {
+                var name = SyntaxFactory.ParseTypeName(NamingProvider.GetName(baseModel));
+                yield return SyntaxFactory.SimpleBaseType(name);
+            }
         }
 
         protected virtual string GetClassName()
         {
-            return CodingUnitInfoProvider.Name;
+            return NamingProvider.GetName(CodingUnit);
         }
     }
 }
