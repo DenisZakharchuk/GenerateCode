@@ -10,7 +10,7 @@ namespace CodeGeneration.Services.Base
     public abstract class CodeGenerator<TCodingUnit> : CodeGenerator, ICodeGenerator<TCodingUnit>
         where TCodingUnit : CodingUnit
     {
-        private readonly TCodingUnit? codingUnit;
+        private TCodingUnit? codingUnit;
 
         protected virtual TCodingUnit CodingUnit => codingUnit ?? throw new ApplicationException($"{nameof(codingUnit)} is not initiated. Call {nameof(Init)} method first!"); 
         
@@ -20,6 +20,7 @@ namespace CodeGeneration.Services.Base
 
         public virtual void Init(TCodingUnit codingUnit)
         {
+            this.codingUnit = codingUnit;
             if(CodingUnitContextProvider is ICodingUnitContextProvider<TCodingUnit> c)
             {
                 c.Init(codingUnit);

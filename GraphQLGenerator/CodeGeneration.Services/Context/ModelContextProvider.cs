@@ -10,19 +10,24 @@ namespace CodeGeneration.Services.Context
             {
                 if (CodingUnit.Methods != null)
                 {
-                    foreach (var prop in CodingUnit.Methods)
+                    foreach (var method in CodingUnit.Methods)
                     {
-                        if (!prop.IsPrimitive && prop.PropertyType != null && !string.IsNullOrEmpty(prop.PropertyType.Namespace))
+                        if (method.ReturnType != null && !string.IsNullOrEmpty(method.ReturnType.Namespace))
                         {
-                            yield return prop.PropertyType.Namespace;
+                            yield return method.ReturnType.Namespace;
                         }
                     }
                 }
             }
         }
 
-        public override bool HasBase => throw new NotImplementedException();
+        public override bool HasBase => CodingUnit.BaseModel != null;
     }
+
+    public interface IBehaviourContextProvider : ICodingUnitContextProvider<Behaviour>
+    {
+    }
+
     public class ModelContextProvider : CodingUnitContextProvider<Model>, IModelContextProvider
     {
         public ModelContextProvider()

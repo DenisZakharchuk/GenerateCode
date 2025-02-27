@@ -3,39 +3,44 @@
 using CodeGeneration.Services.Naming;
 using CodeGeneration.Services.Generators;
 using Microsoft.Extensions.DependencyInjection;
-using CodeGeneration.Services.Base;
+using CodeGeneration.Services.Context;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        const string BaseNamespace = "DZAKH";
+        var _string = new CodingUnit() { Name = "String", Namespace = "System" };
+
+        const string BaseNamespace = "TBI.FOS";
         const string DefaultNamespace = "Test";
 
-        CodingUnit[] models = [
+        Model[] models = [
             new Model() {
                 Name = "Customer",
-                Namespace = "System",
+                Namespace = "Models",
                 Properties = [
                     new PropertyInfo() {
                         Name = "FullName",
-                        Type = "String"
+                        Type = _string.Name,
+                        PropertyType = _string
                     },
                     new PropertyInfo()
                     {
                         Name = "Email",
-                        Type = "String"
+                        Type = _string.Name,
+                        PropertyType = _string
                     },
                     new PropertyInfo()
                     {
                         Name = "Password",
-                        Type = "String"
+                        Type = _string.Name,
+                        PropertyType = _string
                     }
                 ]
             },
             new Model(){
                 Name = "Device",
-                Namespace = "System",
+                Namespace = "Models",
                 Properties = [
                     new PropertyInfo(){
                         Name = "Name",
@@ -60,15 +65,19 @@ internal class Program
 
         //servicesCollection.AddTransient<ICodingInfoProviderFactory, CodingInfoProviderFactory>();
 
-        foreach (var serviceKey in serviceKeys)
-        {
-            servicesCollection.AddKeyedTransient<INamingProvider>(
-                serviceKey,
-                (sp, key) => new ServiceNamingProvider(BaseNamespace, DefaultNamespace, key?.ToString() ?? "Service")
-            );
-        }
+        //foreach (var serviceKey in serviceKeys)
+        //{
+        //    servicesCollection.AddKeyedTransient<INamingProvider>(
+        //        serviceKey,
+        //        (sp, key) => new ServiceNamingProvider(BaseNamespace, DefaultNamespace, key?.ToString() ?? "Service")
+        //    );
+        //}
 
+        servicesCollection.AddTransient<IServiceNamingProvider, ServiceNamingProvider>();
         servicesCollection.AddTransient<IDefaultNamingProvider>(sp => new DefaultNamingProvider(BaseNamespace, DefaultNamespace));
+
+        servicesCollection.AddTransient<IModelContextProvider, ModelContextProvider>();
+        servicesCollection.AddTransient<IBehaviourContextProvider, BehaviourContextProvider>();
 
         servicesCollection.AddTransient<IServiceClassGenerator, ServiceClassGenerator>();
         servicesCollection.AddTransient<IModelGenerator, ModelGenerator>();
@@ -77,14 +86,26 @@ internal class Program
 
         //var factory = serviceProvider.GetRequiredService<ICodingInfoProviderFactory>();
 
+        var generator = serviceProvider.GetRequiredService<IModelGenerator>();
+
+        string outputFolder = "C:\\test\\generation";
+
         foreach (var modelInfo in models)
         {
-            foreach (var key in serviceKeys)
+            generator.Init(modelInfo);
+            var result = generator.Generate();
+            if(result != null)
             {
-                //var codingUnitInfoProvider = factory.CreateCodingUnitInfoProvider(modelInfo, key);
+                // Save generated class file
+                var outputSubFolder = Path.Combine(outputFolder, modelInfo.Name, modelInfo.Namespace ?? "default");
+
+                // Ensure output directory exists
+                Directory.CreateDirectory(outputSubFolder);
+
+                var outputCsPath = Path.Combine(outputSubFolder, $"{modelInfo.Name}.cs");
+
+                File.WriteAllText(outputCsPath, result.ToString());
             }
         }
-
-
     }
 }

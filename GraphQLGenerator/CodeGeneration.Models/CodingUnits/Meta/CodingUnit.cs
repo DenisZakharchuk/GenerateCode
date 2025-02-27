@@ -9,7 +9,7 @@ namespace CodeGeneration.Models.CodingUnits.Meta
     public class MethodInfo
     {
         public required string Name { get; set; }
-        public int MyProperty { get; set; }
+        public CodingUnit? ReturnType { get; set; }
     }
 
     public class Model : Class
