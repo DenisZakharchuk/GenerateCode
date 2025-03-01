@@ -1,10 +1,11 @@
-﻿namespace CodeGeneration.Models.CodingUnits.Meta
+﻿namespace CodeGeneration.Models.CodingUnits.Meta.Members
 {
-    public class PropertyInfo
+    public class MethodInfo : BaseMember
     {
-        public required string Name { get; set; }
-        public required string Type { get; set; }
-        public CodingUnit? PropertyType { get; set; }
+
+    }
+    public class PropertyInfo : BaseMember
+    {
         public bool IsNullable { get; set; }
         public bool IsCollection { get; set; }
         public List<string>? GenericArguments { get; set; }

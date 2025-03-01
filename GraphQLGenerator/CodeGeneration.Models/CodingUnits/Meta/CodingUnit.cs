@@ -1,25 +1,22 @@
 ﻿
+using CodeGeneration.Models.CodingUnits.Meta.Members;
+
 namespace CodeGeneration.Models.CodingUnits.Meta
 {
     public class Behaviour : Class
     {
-        public IEnumerable<MethodInfo>? Methods { get; set; }
     }
 
-    public class MethodInfo
-    {
-        public required string Name { get; set; }
-        public CodingUnit? ReturnType { get; set; }
-    }
 
     public class Model : Class
     {
-        public PropertyInfo[]? Properties { get; set; }
     }
 
     public class Class : CodingUnit
     {
+        public PropertyInfo[]? Properties { get; set; }
         public Model? BaseModel { get; set; }
+        public IEnumerable<MethodInfo>? Methods { get; set; }
     }
 
     public class CodingUnit

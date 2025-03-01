@@ -4,6 +4,8 @@ using CodeGeneration.Services.Naming;
 using CodeGeneration.Services.Generators;
 using Microsoft.Extensions.DependencyInjection;
 using CodeGeneration.Services.Context;
+using CodeGeneration.Models.CodingUnits.Meta.Members;
+using CodeGeneration.Services.Base;
 
 internal class Program
 {
@@ -21,20 +23,20 @@ internal class Program
                 Properties = [
                     new PropertyInfo() {
                         Name = "FullName",
-                        Type = _string.Name,
-                        PropertyType = _string
+                        //Type = _string.Name,
+                        Type = _string
                     },
                     new PropertyInfo()
                     {
                         Name = "Email",
-                        Type = _string.Name,
-                        PropertyType = _string
+                        Type = _string,
+                        //PropertyType = _string
                     },
                     new PropertyInfo()
                     {
                         Name = "Password",
-                        Type = _string.Name,
-                        PropertyType = _string
+                        Type = _string,
+                        //PropertyType = _string
                     }
                 ]
             },
@@ -44,15 +46,15 @@ internal class Program
                 Properties = [
                     new PropertyInfo(){
                         Name = "Name",
-                        Type = "String"
+                        Type = _string
                     },
                     new PropertyInfo(){
                         Name = "Validity",
-                        Type = "String"
+                        Type = _string
                     },
                     new PropertyInfo(){
                         Name = "QQ",
-                        Type = "String"
+                        Type = _string
                     },
                 ]
             }
@@ -79,6 +81,10 @@ internal class Program
         servicesCollection.AddTransient<IModelContextProvider, ModelContextProvider>();
         servicesCollection.AddTransient<IBehaviourContextProvider, BehaviourContextProvider>();
 
+        servicesCollection.AddTransient<IMemberGenerator<PropertyInfo>, PropertyGenerator>();
+        servicesCollection.AddTransient<IMemberGenerator<MethodInfo>, MethodGenerator>();
+
+
         servicesCollection.AddTransient<IServiceClassGenerator, ServiceClassGenerator>();
         servicesCollection.AddTransient<IModelGenerator, ModelGenerator>();
 
@@ -92,8 +98,7 @@ internal class Program
 
         foreach (var modelInfo in models)
         {
-            generator.Init(modelInfo);
-            var result = generator.Generate();
+            var result = generator.Generate(modelInfo);
             if(result != null)
             {
                 // Save generated class file

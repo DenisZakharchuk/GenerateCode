@@ -18,6 +18,12 @@ namespace CodeGeneration.Services.Base
         {
         }
 
+        public virtual SyntaxTree Generate(TCodingUnit codingUnit)
+        {
+            Init(codingUnit);
+            return Generate();
+        }
+
         public virtual void Init(TCodingUnit codingUnit)
         {
             this.codingUnit = codingUnit;

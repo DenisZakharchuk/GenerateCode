@@ -23,7 +23,7 @@ namespace CodeGeneration.Services.Factories
             return classInfo;
         }
 
-        private List<Models.CodingUnits.Meta.PropertyInfo> CreateProperties(Type target, List<Type> exclude)
+        private List<Models.CodingUnits.Meta.Members.PropertyInfo> CreateProperties(Type target, List<Type> exclude)
         {
             return target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Select(p =>
@@ -33,10 +33,10 @@ namespace CodeGeneration.Services.Factories
                         p.PropertyType
                     };
 
-                    return new Models.CodingUnits.Meta.PropertyInfo
+                    return new Models.CodingUnits.Meta.Members.PropertyInfo
                     {
                         Name = p.Name,
-                        Type = GetTypeName(p.PropertyType),
+                        Type = new CodingUnit() { Name = GetTypeName(p.PropertyType) },
                         IsNullable = IsNullable(p.PropertyType),
                         IsCollection = IsCollection(p.PropertyType),
                         IsPrimitive = IsPrimitive(p.PropertyType),
@@ -46,13 +46,13 @@ namespace CodeGeneration.Services.Factories
                             && !IsNullable(p.PropertyType)
                             && !IsPrimitive(p.PropertyType)
                             ? Includes(p.PropertyType, childExclude)
-                            : new List<Models.CodingUnits.Meta.PropertyInfo>()
+                            : new List<Models.CodingUnits.Meta.Members.PropertyInfo>()
                     };
                 })
                 .ToList();
         }
 
-        private List<Models.CodingUnits.Meta.PropertyInfo> Includes(Type propertyType, List<Type> exclude)
+        private List<Models.CodingUnits.Meta.Members.PropertyInfo> Includes(Type propertyType, List<Type> exclude)
         {
             return CreateProperties(propertyType, exclude);
         }

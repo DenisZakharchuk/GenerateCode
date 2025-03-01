@@ -12,9 +12,9 @@ namespace CodeGeneration.Services.Context
                 {
                     foreach (var method in CodingUnit.Methods)
                     {
-                        if (method.ReturnType != null && !string.IsNullOrEmpty(method.ReturnType.Namespace))
+                        if (method.Type != null && !string.IsNullOrEmpty(method.Type.Namespace))
                         {
-                            yield return method.ReturnType.Namespace;
+                            yield return method.Type.Namespace;
                         }
                     }
                 }
@@ -42,9 +42,9 @@ namespace CodeGeneration.Services.Context
                 {
                     foreach (var prop in CodingUnit.Properties)
                     {
-                        if (!prop.IsPrimitive && prop.PropertyType != null && !string.IsNullOrEmpty(prop.PropertyType.Namespace))
+                        if (!prop.IsPrimitive && prop.Type != null && !string.IsNullOrEmpty(prop.Type.Namespace))
                         {
-                            yield return prop.PropertyType.Namespace;
+                            yield return prop.Type.Namespace;
                         }
                     }
                 }

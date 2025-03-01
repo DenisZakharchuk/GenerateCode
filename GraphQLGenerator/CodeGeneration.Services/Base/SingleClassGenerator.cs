@@ -1,4 +1,5 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Models.CodingUnits.Meta.Members;
 using CodeGeneration.Services.Context;
 using CodeGeneration.Services.Naming;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,10 +10,17 @@ namespace CodeGeneration.Services.Base
     public abstract class SingleClassGenerator<TCodingUnit> : CodeGenerator<TCodingUnit>
         where TCodingUnit: Class
     {
+        private readonly IMemberGenerator<PropertyInfo> _propertyGenerator;
+        private readonly IMemberGenerator<MethodInfo> _methodGenerator;
+
         protected SingleClassGenerator(
             INamingProvider namingProvider,
-            ICodingUnitContextProvider<TCodingUnit> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
+            ICodingUnitContextProvider<TCodingUnit> codingUnitContextProvider,
+            IMemberGenerator<PropertyInfo> propertyGenerator,
+            IMemberGenerator<MethodInfo> methodGenerator) : base(namingProvider, codingUnitContextProvider)
         {
+            _propertyGenerator = propertyGenerator;
+            _methodGenerator = methodGenerator;
         }
 
         protected override IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations()
@@ -35,6 +43,22 @@ namespace CodeGeneration.Services.Base
         protected virtual IEnumerable<MemberDeclarationSyntax> GetMembers()
         {
             yield return GenerateConstructor();
+            if (CodingUnit.Properties != null)
+            {
+                foreach (var propertyInfo in CodingUnit.Properties)
+                {
+                    _propertyGenerator.Init(propertyInfo);
+                    yield return _propertyGenerator.GenerateMember();
+                }
+            }
+            if (CodingUnit.Methods != null)
+            {
+                foreach (var methodInfo in CodingUnit.Methods)
+                {
+                    _methodGenerator.Init(methodInfo);
+                    yield return _methodGenerator.GenerateMember();
+                }
+            }
         }
 
         protected virtual ConstructorDeclarationSyntax GenerateConstructor()
