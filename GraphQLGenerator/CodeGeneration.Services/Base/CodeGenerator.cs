@@ -1,4 +1,5 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Services.Base.Result;
 using CodeGeneration.Services.Context;
 using CodeGeneration.Services.Naming;
 using Microsoft.CodeAnalysis;
@@ -18,7 +19,7 @@ namespace CodeGeneration.Services.Base
         {
         }
 
-        public virtual SyntaxTree Generate(TCodingUnit codingUnit)
+        public virtual GenerationResult Generate(TCodingUnit codingUnit)
         {
             Init(codingUnit);
             return Generate();
@@ -54,7 +55,7 @@ namespace CodeGeneration.Services.Base
             //_codingUnitInfoProvider = codingUnitInfoProvider;
         }
 
-        public SyntaxTree Generate()
+        public GenerationResult Generate()
         {
             var compilationUnit = CreateRootCompilationUnit();
 
@@ -63,7 +64,7 @@ namespace CodeGeneration.Services.Base
                     .AddMembers(PrimaryMemberDeclarations().ToArray()))
                 .NormalizeWhitespace();
 
-            return SyntaxFactory.SyntaxTree(compilationUnit, encoding: System.Text.Encoding.UTF8);
+            return new GenerationResult<SyntaxTree>(SyntaxFactory.SyntaxTree(compilationUnit, encoding: System.Text.Encoding.UTF8));
         }
 
         protected virtual CompilationUnitSyntax CreateRootCompilationUnit()

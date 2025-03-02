@@ -60,20 +60,9 @@ internal class Program
             }
         ];
 
-
         string[] serviceKeys = ["Reader", "Facade", "Updater", "Validator"];
 
         IServiceCollection servicesCollection = new ServiceCollection();
-
-        //servicesCollection.AddTransient<ICodingInfoProviderFactory, CodingInfoProviderFactory>();
-
-        //foreach (var serviceKey in serviceKeys)
-        //{
-        //    servicesCollection.AddKeyedTransient<INamingProvider>(
-        //        serviceKey,
-        //        (sp, key) => new ServiceNamingProvider(BaseNamespace, DefaultNamespace, key?.ToString() ?? "Service")
-        //    );
-        //}
 
         servicesCollection.AddTransient<IServiceNamingProvider, ServiceNamingProvider>();
         servicesCollection.AddTransient<IDefaultNamingProvider>(sp => new DefaultNamingProvider(BaseNamespace, DefaultNamespace));
@@ -83,7 +72,6 @@ internal class Program
 
         servicesCollection.AddTransient<IMemberGenerator<PropertyInfo>, PropertyGenerator>();
         servicesCollection.AddTransient<IMemberGenerator<MethodInfo>, MethodGenerator>();
-
 
         servicesCollection.AddTransient<IServiceClassGenerator, ServiceClassGenerator>();
         servicesCollection.AddTransient<IModelGenerator, ModelGenerator>();

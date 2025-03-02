@@ -1,15 +1,15 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
-using Microsoft.CodeAnalysis;
+using CodeGeneration.Services.Base.Result;
 
 namespace CodeGeneration.Services.Base
 {
     public interface ICodeGenerator<TCodingUnit> : ICodeGenerator, ICodingUnitService<TCodingUnit>
         where TCodingUnit : CodingUnit
     {
-        SyntaxTree Generate(TCodingUnit codingUnit) => Generate();
+        GenerationResult Generate(TCodingUnit codingUnit) => Generate();
     }
     public interface ICodeGenerator
     {
-        SyntaxTree Generate();
+        GenerationResult Generate();
     }
 }
