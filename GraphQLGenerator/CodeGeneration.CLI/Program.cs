@@ -1,5 +1,4 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
-
 using CodeGeneration.Services.Naming;
 using CodeGeneration.Services.Generators;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +10,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var _string = new CodingUnit() { Name = "String", Namespace = "System" };
+        var _string = new Class() { Name = "String", Namespace = "System" };
 
         const string BaseNamespace = "TBI.FOS";
         const string DefaultNamespace = "Test";
@@ -37,6 +36,20 @@ internal class Program
                         Name = "Password",
                         Type = _string,
                         //PropertyType = _string
+                    }
+                ],
+                Methods = [
+                    new MethodInfo(){
+                        Name = "SetFullName",
+                        Type = _string
+                    },
+                    new MethodInfo(){
+                        Name = "SetPassword",
+                        Type = _string,
+                    },
+                    new MethodInfo(){
+                        Name = "SetEmail",
+                        Type = _string
                     }
                 ]
             },

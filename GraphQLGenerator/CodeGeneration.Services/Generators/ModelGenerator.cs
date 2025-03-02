@@ -8,7 +8,6 @@ namespace CodeGeneration.Services.Generators
 {
     public class ModelGenerator : SingleClassGenerator<Model>, IModelGenerator
     {
-
         public ModelGenerator(
             IDefaultNamingProvider namingProvider,
             IModelContextProvider modelContextProvider,
@@ -17,7 +16,5 @@ namespace CodeGeneration.Services.Generators
             ) : base(namingProvider, modelContextProvider, propertyGenerator, methodGenerator)
         {
         }
-
-        
     }
 }

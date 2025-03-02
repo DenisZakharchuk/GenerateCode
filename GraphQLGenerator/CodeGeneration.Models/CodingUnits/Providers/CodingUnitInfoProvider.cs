@@ -11,7 +11,7 @@ namespace CodeGeneration.Models.CodingUnits.Providers
         {
             this.codingUnit = codingUnit ?? throw new ArgumentNullException(nameof(codingUnit));
             Name = codingUnit.Name;
-            Namespace = codingUnit.Namespace;
+            //Namespace = codingUnit.Namespace;
             RequiredNamespaces = [];
         }
 
