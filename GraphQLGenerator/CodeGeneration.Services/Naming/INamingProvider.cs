@@ -1,10 +1,14 @@
 ﻿using CodeGeneration.Models.CodingUnits.Meta;
+using CodeGeneration.Services.Base;
 
 namespace CodeGeneration.Services.Naming
 {
-    public interface INamingProvider
+    public interface IDeclarationProvider : ICodingUnitService<CodingUnit>
     {
-        string GetName(CodingUnit unit);
-        string GetNamespace(CodingUnit unit);
+        bool HasBase { get; }
+
+        string GetBaseName();
+        string GetName();
+        string GetNamespace();
     }
 }

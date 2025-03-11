@@ -8,25 +8,22 @@ namespace CodeGeneration.Services.Base
 {
     public abstract class SingleInterfaceGenerator : CodeGenerator<Behaviour>
     {
-        protected SingleInterfaceGenerator(INamingProvider namingProvider, ICodingUnitContextProvider<Behaviour> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
+        protected SingleInterfaceGenerator(IDeclarationProvider namingProvider, ICodingUnitContextProvider<Behaviour> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
         {
         }
 
         protected override IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations()
         {
-            var graphQLTypeName = GetInterfaceName();
-            var generatedBaseType = GetBaseInterface();
+            var interfaceDeclarationSyntax = SyntaxFactory.InterfaceDeclaration(DeclarationProvider.GetName())
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-            yield return SyntaxFactory.InterfaceDeclaration(graphQLTypeName)
-                            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                            .AddBaseListTypes(
-                                SyntaxFactory.SimpleBaseType(generatedBaseType));
+            if (DeclarationProvider.HasBase)
+            {
+                interfaceDeclarationSyntax = interfaceDeclarationSyntax.AddBaseListTypes(
+                    SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(DeclarationProvider.GetBaseName())));
+            }
+                            
+            yield return interfaceDeclarationSyntax;
         }
-
-        protected virtual string GetInterfaceName()
-        {
-            return NamingProvider.GetName(CodingUnit);
-        }
-        protected abstract TypeSyntax GetBaseInterface();
     }
 }

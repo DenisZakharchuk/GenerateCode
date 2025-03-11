@@ -1,8 +1,8 @@
 ﻿namespace CodeGeneration.Services.Naming
 {
-    public class DTONamingProvider : NamingProvider, INamingProvider
+    public class DTODeclarationProvider : DeclarationProvider, IDeclarationProvider
     {
-        public DTONamingProvider(string baseNamespace, string defaultNamespace) : base(baseNamespace, defaultNamespace)
+        public DTODeclarationProvider(string baseNamespace, string defaultNamespace) : base(baseNamespace, defaultNamespace)
         {
         }
 

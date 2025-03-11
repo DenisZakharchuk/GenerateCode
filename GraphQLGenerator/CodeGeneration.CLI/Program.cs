@@ -77,8 +77,8 @@ internal class Program
 
         IServiceCollection servicesCollection = new ServiceCollection();
 
-        servicesCollection.AddTransient<IServiceNamingProvider, ServiceNamingProvider>();
-        servicesCollection.AddTransient<IDefaultNamingProvider>(sp => new DefaultNamingProvider(BaseNamespace, DefaultNamespace));
+        servicesCollection.AddTransient<IServiceDeclarationProvider, ServiceDeclarationProvider>();
+        servicesCollection.AddTransient<IDefaultDeclarationProvider>(sp => new DefaultDeclarationProvider(BaseNamespace, DefaultNamespace));
 
         servicesCollection.AddTransient<IModelContextProvider, ModelContextProvider>();
         servicesCollection.AddTransient<IBehaviourContextProvider, BehaviourContextProvider>();

@@ -1,8 +1,8 @@
 ﻿namespace CodeGeneration.Services.Naming
 {
-    public class DefaultNamingProvider : NamingProvider, IDefaultNamingProvider
+    public class DefaultDeclarationProvider : DeclarationProvider, IDefaultDeclarationProvider
     {
-        public DefaultNamingProvider(string baseNamespace, string defaultNamespace) : base(baseNamespace, defaultNamespace)
+        public DefaultDeclarationProvider(string baseNamespace, string defaultNamespace) : base(baseNamespace, defaultNamespace)
         {
         }
 
@@ -12,7 +12,7 @@
         }
     }
 
-    public interface IDefaultNamingProvider : INamingProvider
+    public interface IDefaultDeclarationProvider : IDeclarationProvider
     {
     }
 }

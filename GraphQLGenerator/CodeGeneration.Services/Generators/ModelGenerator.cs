@@ -9,7 +9,7 @@ namespace CodeGeneration.Services.Generators
     public class ModelGenerator : SingleClassGenerator<Model>, IModelGenerator
     {
         public ModelGenerator(
-            IDefaultNamingProvider namingProvider,
+            IDefaultDeclarationProvider namingProvider,
             IModelContextProvider modelContextProvider,
             IMemberGenerator<PropertyInfo> propertyGenerator,
             IMemberGenerator<MethodInfo> methodGenerator

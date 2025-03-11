@@ -1,10 +1,8 @@
-﻿using CodeGeneration.Models.CodingUnits.Meta;
-
-namespace CodeGeneration.Services.Naming
+﻿namespace CodeGeneration.Services.Naming
 {
-    public class ServiceNamingProvider : NamingProvider, IServiceNamingProvider
+    public class ServiceDeclarationProvider : DeclarationProvider, IServiceDeclarationProvider
     {
-        public ServiceNamingProvider(string baseNamespace, string defaultNamespace, string serviceName) : base(baseNamespace, defaultNamespace)
+        public ServiceDeclarationProvider(string baseNamespace, string defaultNamespace, string serviceName) : base(baseNamespace, defaultNamespace)
         {
             ServiceName = serviceName;
         }
@@ -16,13 +14,13 @@ namespace CodeGeneration.Services.Naming
             return ServiceName;
         }
 
-        public override string GetName(CodingUnit unit)
+        public override string GetName()
         {
-            return $"{base.GetName(unit)}{ServiceName}";
+            return $"{base.GetName()}{ServiceName}";
         }
     }
 
-    public interface IServiceNamingProvider : INamingProvider
+    public interface IServiceDeclarationProvider : IDeclarationProvider
     {
         string ServiceName { get; }
     }

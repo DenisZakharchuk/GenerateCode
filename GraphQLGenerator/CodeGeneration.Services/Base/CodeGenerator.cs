@@ -15,12 +15,13 @@ namespace CodeGeneration.Services.Base
 
         protected virtual TCodingUnit CodingUnit => codingUnit ?? throw new ApplicationException($"{nameof(codingUnit)} is not initiated. Call {nameof(Init)} method first!"); 
         
-        protected CodeGenerator(INamingProvider namingProvider, ICodingUnitContextProvider<TCodingUnit> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
+        protected CodeGenerator(IDeclarationProvider namingProvider, ICodingUnitContextProvider<TCodingUnit> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
         {
         }
 
         public virtual GenerationResult Generate(TCodingUnit codingUnit)
         {
+            DeclarationProvider.Init(codingUnit);
             Init(codingUnit);
             return Generate();
         }
@@ -33,24 +34,17 @@ namespace CodeGeneration.Services.Base
                 c.Init(codingUnit);
             }
         }
-
-        protected override NamespaceDeclarationSyntax NamespaceDeclaration()
-        {
-            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(NamingProvider.GetNamespace(CodingUnit)));
-        }
     }
     public abstract class CodeGenerator : ICodeGenerator
     {
-        private readonly INamingProvider namingProvider;
+        private readonly IDeclarationProvider declarationProvider;
         private readonly ICodingUnitContextProvider codingUnitContextProvider;
-
-        public INamingProvider NamingProvider => namingProvider;
+        public IDeclarationProvider DeclarationProvider => declarationProvider;
         public ICodingUnitContextProvider CodingUnitContextProvider => codingUnitContextProvider;
 
-
-        protected CodeGenerator(INamingProvider namingProvider, ICodingUnitContextProvider codingUnitContextProvider)
+        protected CodeGenerator(IDeclarationProvider declarationProvider, ICodingUnitContextProvider codingUnitContextProvider)
         {
-            this.namingProvider = namingProvider ?? throw new ArgumentNullException(nameof(namingProvider));
+            this.declarationProvider = declarationProvider ?? throw new ArgumentNullException(nameof(declarationProvider));
             this.codingUnitContextProvider = codingUnitContextProvider ?? throw new ArgumentNullException(nameof(codingUnitContextProvider));
             //_codingUnitInfoProvider = codingUnitInfoProvider;
         }
@@ -66,27 +60,56 @@ namespace CodeGeneration.Services.Base
 
             return new GenerationResult<SyntaxTree>(SyntaxFactory.SyntaxTree(compilationUnit, encoding: System.Text.Encoding.UTF8));
         }
-
         protected virtual CompilationUnitSyntax CreateRootCompilationUnit()
         {
             var compilationUnit = SyntaxFactory.CompilationUnit();
             compilationUnit = AppendUsings(compilationUnit);
             return compilationUnit;
         }
+        protected virtual ConstructorDeclarationSyntax GenerateConstructor()
+        {
+            return SyntaxFactory.ConstructorDeclaration(DeclarationProvider.GetName())
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .WithBody(SyntaxFactory.Block());
+        }
+        protected virtual IEnumerable<BaseTypeSyntax> GetBaseTypes()
+        {
+            if (DeclarationProvider.HasBase)
+            {
+                var name = SyntaxFactory.ParseTypeName(DeclarationProvider.GetBaseName());
+                yield return SyntaxFactory.SimpleBaseType(name);
+            }
+        }
+        protected abstract IEnumerable<MemberDeclarationSyntax> GetMembers();
+        protected virtual IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations()
+        {
+            var classDeclarationSyntax = SyntaxFactory.ClassDeclaration(DeclarationProvider.GetName())
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-        protected abstract IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations();
+            if (CodingUnitContextProvider.HasBase)
+            {
+                classDeclarationSyntax = classDeclarationSyntax.AddBaseListTypes(
+                    GetBaseTypes().ToArray());
+            }
 
+            classDeclarationSyntax = classDeclarationSyntax.AddMembers(
+                GetMembers().ToArray());
+
+            yield return classDeclarationSyntax;
+        }
         protected virtual CompilationUnitSyntax AppendUsings(CompilationUnitSyntax compilationUnit)
         {
             foreach (var ns in CodingUnitContextProvider.RequiredNamespaces.OrderBy(x => x))
             {
                 compilationUnit = compilationUnit
-                            .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)));
+                    .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)));
             }
 
             return compilationUnit;
         }
-
-        protected abstract NamespaceDeclarationSyntax NamespaceDeclaration();
+        protected virtual NamespaceDeclarationSyntax NamespaceDeclaration()
+        {
+            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(DeclarationProvider.GetNamespace()));
+        }
     }
 }

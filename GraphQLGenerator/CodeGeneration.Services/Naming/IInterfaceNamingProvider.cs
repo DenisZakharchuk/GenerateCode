@@ -3,5 +3,5 @@ using CodeGeneration.Services.Base;
 
 namespace CodeGeneration.Services.Naming
 {
-    public interface IInterfaceNamingProvider : INamingProvider, ICodingUnitService<Behaviour>;
+    public interface IInterfaceDeclarationProvider : IDeclarationProvider, ICodingUnitService<Behaviour>;
 }
