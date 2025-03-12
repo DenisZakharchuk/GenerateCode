@@ -3,11 +3,17 @@ using CodeGeneration.Services.Base;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using CodeGeneration.Services.Base.Result;
 
 namespace CodeGeneration.Services.Generators
 {
     public class PropertyGenerator : MemberGenerator<PropertyInfo>, IPropertyGenerator
     {
+        public override GenerationResult<MemberDeclarationSyntax> Generate()
+        {
+            return new GenerationResult<MemberDeclarationSyntax>(CreateMemberDeclaration(CodingUnit));
+        }
+
         protected override PropertyDeclarationSyntax CreateMemberDeclaration(PropertyInfo memberInfo)
         {
             var property = SyntaxFactory.PropertyDeclaration(

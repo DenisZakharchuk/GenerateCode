@@ -1,4 +1,5 @@
 ﻿using CodeGeneration.Services.Base;
+using CodeGeneration.Services.Base.Result;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -6,6 +7,11 @@ namespace CodeGeneration.Services.Generators
 {
     public class MethodGenerator : MemberGenerator<Models.CodingUnits.Meta.Members.MethodInfo>, IMethodGenerator
     {
+        public override GenerationResult<MemberDeclarationSyntax> Generate()
+        {
+            return new GenerationResult<MemberDeclarationSyntax>(CreateMemberDeclaration(CodingUnit));
+        }
+
         protected override MethodDeclarationSyntax CreateMemberDeclaration(Models.CodingUnits.Meta.Members.MethodInfo memberInfo)
         {
             var returnType = memberInfo.Type.Name;

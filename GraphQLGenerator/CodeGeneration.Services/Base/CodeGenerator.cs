@@ -8,20 +8,39 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CodeGeneration.Services.Base
 {
-    public abstract class CodeGenerator<TCodingUnit> : CodeGenerator, ICodeGenerator<TCodingUnit>
+    public abstract class DeclarationGenerator<TCodingUnit, TResult> : Generator<TCodingUnit, TResult>, IDeclarationGenerator<TCodingUnit, TResult>
+        where TResult : class
+        where TCodingUnit : CodingUnit
+    {
+
+        protected DeclarationGenerator()
+        {
+        }
+    }
+
+    public interface IDeclarationGenerator<TCodingUnit, TResult> : IGenerator<TCodingUnit, TResult>
+        where TResult : class
+        where TCodingUnit : CodingUnit
+    {
+
+    }
+
+    public abstract class CodeGenerator<TCodingUnit> : ICodeGenerator<TCodingUnit>
         where TCodingUnit : CodingUnit
     {
         private TCodingUnit? codingUnit;
 
-        protected virtual TCodingUnit CodingUnit => codingUnit ?? throw new ApplicationException($"{nameof(codingUnit)} is not initiated. Call {nameof(Init)} method first!"); 
-        
-        protected CodeGenerator(IDeclarationProvider namingProvider, ICodingUnitContextProvider<TCodingUnit> codingUnitContextProvider) : base(namingProvider, codingUnitContextProvider)
+        protected virtual TCodingUnit CodingUnit => codingUnit ?? throw new ApplicationException($"{nameof(codingUnit)} is not initiated. Call {nameof(Init)} method first!");
+        private readonly IDeclarationProvider declarationProvider;
+        private readonly ICodingUnitContextProvider codingUnitContextProvider;
+        protected CodeGenerator(IDeclarationProvider declarationProvider, ICodingUnitContextProvider codingUnitContextProvider)
         {
+            this.declarationProvider = declarationProvider ?? throw new ArgumentNullException(nameof(declarationProvider));
+            this.codingUnitContextProvider = codingUnitContextProvider ?? throw new ArgumentNullException(nameof(codingUnitContextProvider));
+            //_codingUnitInfoProvider = codingUnitInfoProvider;
         }
-
         public virtual GenerationResult Generate(TCodingUnit codingUnit)
         {
-            DeclarationProvider.Init(codingUnit);
             Init(codingUnit);
             return Generate();
         }
@@ -29,26 +48,12 @@ namespace CodeGeneration.Services.Base
         public virtual void Init(TCodingUnit codingUnit)
         {
             this.codingUnit = codingUnit;
-            if(CodingUnitContextProvider is ICodingUnitContextProvider<TCodingUnit> c)
+            declarationProvider.Init(codingUnit);
+            if(codingUnitContextProvider is ICodingUnitContextProvider<TCodingUnit> c)
             {
                 c.Init(codingUnit);
             }
         }
-    }
-    public abstract class CodeGenerator : ICodeGenerator
-    {
-        private readonly IDeclarationProvider declarationProvider;
-        private readonly ICodingUnitContextProvider codingUnitContextProvider;
-        public IDeclarationProvider DeclarationProvider => declarationProvider;
-        public ICodingUnitContextProvider CodingUnitContextProvider => codingUnitContextProvider;
-
-        protected CodeGenerator(IDeclarationProvider declarationProvider, ICodingUnitContextProvider codingUnitContextProvider)
-        {
-            this.declarationProvider = declarationProvider ?? throw new ArgumentNullException(nameof(declarationProvider));
-            this.codingUnitContextProvider = codingUnitContextProvider ?? throw new ArgumentNullException(nameof(codingUnitContextProvider));
-            //_codingUnitInfoProvider = codingUnitInfoProvider;
-        }
-
         public GenerationResult Generate()
         {
             var compilationUnit = CreateRootCompilationUnit();
@@ -68,25 +73,25 @@ namespace CodeGeneration.Services.Base
         }
         protected virtual ConstructorDeclarationSyntax GenerateConstructor()
         {
-            return SyntaxFactory.ConstructorDeclaration(DeclarationProvider.GetName())
+            return SyntaxFactory.ConstructorDeclaration(declarationProvider.GetName())
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .WithBody(SyntaxFactory.Block());
         }
         protected virtual IEnumerable<BaseTypeSyntax> GetBaseTypes()
         {
-            if (DeclarationProvider.HasBase)
+            if (declarationProvider.HasBase)
             {
-                var name = SyntaxFactory.ParseTypeName(DeclarationProvider.GetBaseName());
+                var name = SyntaxFactory.ParseTypeName(declarationProvider.GetBaseName());
                 yield return SyntaxFactory.SimpleBaseType(name);
             }
         }
         protected abstract IEnumerable<MemberDeclarationSyntax> GetMembers();
         protected virtual IEnumerable<MemberDeclarationSyntax> PrimaryMemberDeclarations()
         {
-            var classDeclarationSyntax = SyntaxFactory.ClassDeclaration(DeclarationProvider.GetName())
+            var classDeclarationSyntax = SyntaxFactory.ClassDeclaration(declarationProvider.GetName())
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-            if (CodingUnitContextProvider.HasBase)
+            if (codingUnitContextProvider.HasBase)
             {
                 classDeclarationSyntax = classDeclarationSyntax.AddBaseListTypes(
                     GetBaseTypes().ToArray());
@@ -99,7 +104,7 @@ namespace CodeGeneration.Services.Base
         }
         protected virtual CompilationUnitSyntax AppendUsings(CompilationUnitSyntax compilationUnit)
         {
-            foreach (var ns in CodingUnitContextProvider.RequiredNamespaces.OrderBy(x => x))
+            foreach (var ns in codingUnitContextProvider.RequiredNamespaces.OrderBy(x => x))
             {
                 compilationUnit = compilationUnit
                     .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)));
@@ -109,7 +114,14 @@ namespace CodeGeneration.Services.Base
         }
         protected virtual NamespaceDeclarationSyntax NamespaceDeclaration()
         {
-            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(DeclarationProvider.GetNamespace()));
+            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(declarationProvider.GetNamespace()));
+        }
+    }
+
+    public abstract class CodeGenerator : CodeGenerator<CodingUnit>, ICodeGenerator
+    {
+        protected CodeGenerator(IDeclarationProvider declarationProvider, ICodingUnitContextProvider codingUnitContextProvider) : base(declarationProvider, codingUnitContextProvider)
+        {
         }
     }
 }
