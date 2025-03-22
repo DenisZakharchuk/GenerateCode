@@ -3,6 +3,7 @@ using CodeGeneration.Services.Base;
 
 namespace CodeGeneration.Services.Naming
 {
+
     public abstract class DeclarationProvider : CodingUnitService<CodingUnit>, IDeclarationProvider
     {
         protected DeclarationProvider() : this("Base", "Generated")

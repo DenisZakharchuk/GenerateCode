@@ -2,7 +2,11 @@
 {
     public class GenerationResult
     {
-
+        public static GenerationResult<TResult> From<TResult>(TResult result)
+            where TResult : class
+        {
+            return new GenerationResult<TResult>(result);
+        }
     }
     public class GenerationResult<TInner> : GenerationResult
         where TInner : class
@@ -13,6 +17,8 @@
         {
             this.inner = inner;
         }
+
+        public TInner Result => inner;
 
         public override string ToString()
         {

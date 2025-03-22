@@ -8,7 +8,7 @@ namespace CodeGeneration.Services.Mapping
     {
         public static Dictionary<string, SyntaxKind> Map = new Dictionary<string, SyntaxKind>() {
             { "Integer", SyntaxKind.IntKeyword },
-            { "String", SyntaxKind.StringKeyword }
+            { "String", SyntaxKind.StringKeyword },
         };
 
         public static SyntaxKind GetPrimitiveType(CodingUnit codingUnit)

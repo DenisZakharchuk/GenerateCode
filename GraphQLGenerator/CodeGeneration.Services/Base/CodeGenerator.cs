@@ -31,6 +31,9 @@ namespace CodeGeneration.Services.Base
         private TCodingUnit? codingUnit;
 
         protected virtual TCodingUnit CodingUnit => codingUnit ?? throw new ApplicationException($"{nameof(codingUnit)} is not initiated. Call {nameof(Init)} method first!");
+
+        public IDeclarationProvider DeclarationProvider => declarationProvider;
+
         private readonly IDeclarationProvider declarationProvider;
         private readonly ICodingUnitContextProvider codingUnitContextProvider;
         protected CodeGenerator(IDeclarationProvider declarationProvider, ICodingUnitContextProvider codingUnitContextProvider)
@@ -104,7 +107,7 @@ namespace CodeGeneration.Services.Base
         }
         protected virtual CompilationUnitSyntax AppendUsings(CompilationUnitSyntax compilationUnit)
         {
-            foreach (var ns in codingUnitContextProvider.RequiredNamespaces.OrderBy(x => x))
+            foreach (var ns in codingUnitContextProvider.RequiredNamespaces.OrderBy(x => x).Distinct())
             {
                 compilationUnit = compilationUnit
                     .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)));

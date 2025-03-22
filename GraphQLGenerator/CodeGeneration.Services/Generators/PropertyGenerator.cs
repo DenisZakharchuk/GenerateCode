@@ -7,8 +7,18 @@ using CodeGeneration.Services.Base.Result;
 
 namespace CodeGeneration.Services.Generators
 {
+    
     public class PropertyGenerator : MemberGenerator<PropertyInfo>, IPropertyGenerator
     {
+        private readonly IDeclarationGenerator<PropertyInfo, TypeSyntax> _declarationGenerator;
+
+        public PropertyGenerator(IDeclarationGenerator<PropertyInfo, TypeSyntax> declarationGenerator)
+        {
+            _declarationGenerator = declarationGenerator;
+        }
+
+        public IDeclarationGenerator<PropertyInfo, TypeSyntax> DeclarationGenerator => _declarationGenerator;
+
         public override GenerationResult<MemberDeclarationSyntax> Generate()
         {
             return new GenerationResult<MemberDeclarationSyntax>(CreateMemberDeclaration(CodingUnit));
@@ -16,8 +26,11 @@ namespace CodeGeneration.Services.Generators
 
         protected override PropertyDeclarationSyntax CreateMemberDeclaration(PropertyInfo memberInfo)
         {
+            _declarationGenerator.Init(memberInfo);
+            TypeSyntax propertyTypeDeclaration = _declarationGenerator.Generate().Result;// GetDeclaration(memberInfo);
+
             var property = SyntaxFactory.PropertyDeclaration(
-                SyntaxFactory.PredefinedType(SyntaxFactory.Token(Mapping.Types.GetPrimitiveType(memberInfo))), memberInfo.Name)
+                propertyTypeDeclaration, memberInfo.Name)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(
                 [

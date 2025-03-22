@@ -42,9 +42,29 @@ namespace CodeGeneration.Services.Context
                 {
                     foreach (var prop in CodingUnit.Properties)
                     {
-                        if (!prop.IsPrimitive && prop.Type != null && !string.IsNullOrEmpty(prop.Type.Namespace))
+                        if (prop.Type != null)
                         {
-                            yield return prop.Type.Namespace;
+                            var propertyType = prop.Type;
+
+                            foreach(var namespaces in propertyType.GetNamespaces())
+                            {
+                                yield return namespaces;
+                            }
+                        }
+                    }
+                }
+                if (CodingUnit.Methods != null)
+                {
+                    foreach (var method in CodingUnit.Methods)
+                    {
+                        if(method.Type != null)
+                        {
+                            var propertyType = method.Type;
+
+                            foreach (var namespaces in propertyType.GetNamespaces())
+                            {
+                                yield return namespaces;
+                            }
                         }
                     }
                 }
