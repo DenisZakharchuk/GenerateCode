@@ -1,5 +1,4 @@
-﻿
-using CodeGeneration.Models.CodingUnits.Meta.Members;
+﻿using CodeGeneration.Models.CodingUnits.Meta.Members;
 
 namespace CodeGeneration.Models.CodingUnits.Meta
 {
@@ -12,8 +11,11 @@ namespace CodeGeneration.Models.CodingUnits.Meta
     {
     }
 
+    
+
     public class Class : CodingUnit
     {
+        public IEnumerable<CodingUnit>? GenericTypeParameters { get; set; }
         public PropertyInfo[]? Properties { get; set; }
         public Model? BaseModel { get; set; }
         public IEnumerable<MethodInfo>? Methods { get; set; }
@@ -24,6 +26,11 @@ namespace CodeGeneration.Models.CodingUnits.Meta
             foreach(var _namespace in base.GetNamespaces())
             {
                 yield return _namespace;
+            }
+
+            if(BaseModel != null && !string.IsNullOrEmpty(BaseModel.Namespace))
+            {
+                yield return BaseModel.Namespace;
             }
 
             if(GenericTypeArguments != null)

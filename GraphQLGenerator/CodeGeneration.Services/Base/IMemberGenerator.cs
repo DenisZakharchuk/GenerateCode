@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CodeGeneration.Services.Base
 {
+
     public interface IMemberGenerator<TMember> : IMemberGenerator, ICodingUnitService<TMember>
         where TMember : BaseMember
     {

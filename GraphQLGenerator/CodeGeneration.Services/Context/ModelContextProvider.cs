@@ -2,7 +2,7 @@
 
 namespace CodeGeneration.Services.Context
 {
-    public class BehaviourContextProvider : CodingUnitContextProvider<Behaviour>, IBehaviourContextProvider
+    public class BehaviourContextProvider : ClassContextProvider<Behaviour>, IBehaviourContextProvider
     {
         public override IEnumerable<string> RequiredNamespaces
         {
@@ -28,7 +28,7 @@ namespace CodeGeneration.Services.Context
     {
     }
 
-    public class ModelContextProvider : CodingUnitContextProvider<Model>, IModelContextProvider
+    public class ModelContextProvider : ClassContextProvider<Model>, IModelContextProvider
     {
         public ModelContextProvider()
         {
@@ -72,5 +72,6 @@ namespace CodeGeneration.Services.Context
         }
 
         public override bool HasBase => CodingUnit.BaseModel != null;
+
     }
 }

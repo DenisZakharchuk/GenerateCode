@@ -9,10 +9,19 @@ namespace CodeGeneration.Services.Generators
     public class ServiceClassGenerator : SingleClassGenerator<Behaviour>, IServiceClassGenerator
     {
         public ServiceClassGenerator(
-            IDefaultDeclarationProvider namingProvider,
+            IDeclarationProvider namingProvider,
             ICodingUnitContextProvider<Behaviour> codingUnitContextProvider,
             IMemberGenerator<PropertyInfo> propertyGenerator,
-            IMemberGenerator<MethodInfo> methodGenerator) : base(namingProvider, codingUnitContextProvider, propertyGenerator, methodGenerator)
+            IMemberGenerator<MethodInfo> methodGenerator,
+            ITypeParameterGenerator<CodingUnit> typeParameterGenerator,
+            ITypeParameterConstraintGenerator<Class> typeParameterConstraintGenerator) 
+            : base(
+                  namingProvider,
+                  codingUnitContextProvider,
+                  propertyGenerator,
+                  methodGenerator,
+                  typeParameterGenerator,
+                  typeParameterConstraintGenerator)
         {
         }
     }

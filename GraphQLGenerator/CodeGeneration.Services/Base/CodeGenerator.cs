@@ -94,10 +94,24 @@ namespace CodeGeneration.Services.Base
             var classDeclarationSyntax = SyntaxFactory.ClassDeclaration(declarationProvider.GetName())
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
+            if (codingUnitContextProvider.IsGeneric)
+            {
+                classDeclarationSyntax = classDeclarationSyntax.AddTypeParameterListParameters(
+                    GetTypeParameters().ToArray()
+                );
+            }
+
             if (codingUnitContextProvider.HasBase)
             {
                 classDeclarationSyntax = classDeclarationSyntax.AddBaseListTypes(
                     GetBaseTypes().ToArray());
+            }
+
+            if (codingUnitContextProvider.IsGeneric)
+            {
+                classDeclarationSyntax = classDeclarationSyntax.AddConstraintClauses(
+                    GetGenericTypesConstraints().ToArray()
+                );
             }
 
             classDeclarationSyntax = classDeclarationSyntax.AddMembers(
@@ -105,6 +119,11 @@ namespace CodeGeneration.Services.Base
 
             yield return classDeclarationSyntax;
         }
+
+        protected abstract IEnumerable<TypeParameterConstraintClauseSyntax> GetGenericTypesConstraints();
+
+        protected abstract IEnumerable<TypeParameterSyntax> GetTypeParameters();
+
         protected virtual CompilationUnitSyntax AppendUsings(CompilationUnitSyntax compilationUnit)
         {
             foreach (var ns in codingUnitContextProvider.RequiredNamespaces.OrderBy(x => x).Distinct())
